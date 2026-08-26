@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "MoonshotApp.MokshaSetu"
+        applicationId = "in.mokshasetu.virasat"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
