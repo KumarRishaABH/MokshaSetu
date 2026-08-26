@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Virasat — Digital Legacy, Honoured. | Moonshot Avishkar 2026</title>
+<style>
+  :root{
+    --navy:#0f1b3d;
+    --navy2:#16264f;
+    --ink:#1a2238;
+    --gold:#c9a24b;
+    --gold-soft:#e7cf95;
+    --cream:#f7f4ec;
+    --paper:#fffdf8;
+    --muted:#6b7280;
+    --line:#e7e2d6;
+    --green:#1f9d6b;
+    --red:#c14b4b;
+    --shadow:0 18px 50px rgba(15,27,61,.18);
+    --serif:'Georgia','Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.55}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  /* ---------- TOP NAV ---------- */
+  header.top{position:sticky;top:0;z-index:50;background:rgba(15,27,61,.96);backdrop-filter:blur(8px);color:#fff}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.3px}
+  .diya{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#ffe9b0,var(--gold) 60%,#7a5a17);box-shadow:0 0 18px rgba(201,162,75,.7);position:relative;flex:0 0 auto}
+  .diya::after{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:7px;height:13px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:linear-gradient(#fff6d8,#ffb638);box-shadow:0 0 10px #ffcf5e}
+  .brand span small{display:block;font-weight:400;font-size:10px;letter-spacing:2px;color:var(--gold-soft);text-transform:uppercase}
+  .top nav{display:flex;gap:26px;font-size:14px;font-weight:500}
+  .top nav a{color:#d9dce6;text-decoration:none;transition:.2s}
+  .top nav a:hover{color:var(--gold-soft)}
+  .top .pill{background:var(--gold);color:var(--navy);padding:7px 15px;border-radius:30px;font-weight:700;font-size:12px}
+
+  /* ---------- HERO ---------- */
+  .hero{background:linear-gradient(160deg,var(--navy),var(--navy2) 60%,#0b1430);color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% -10%,rgba(201,162,75,.25),transparent 45%),radial-gradient(circle at 10% 120%,rgba(201,162,75,.12),transparent 40%)}
+  .hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding:70px 22px 80px}
+  .kick{display:inline-block;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft);border:1px solid rgba(201,162,75,.4);padding:6px 13px;border-radius:30px;margin-bottom:22px}
+  .hero h1{font-family:var(--serif);font-size:52px;line-height:1.08;font-weight:700;margin-bottom:8px}
+  .hero h1 .hi{color:var(--gold-soft);font-style:italic}
+  .hero .tag{font-size:19px;color:#c8cee0;max-width:520px;margin:18px 0 26px}
+  .hero .cta{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;transition:.2s;text-decoration:none;display:inline-block}
+  .btn.gold{background:var(--gold);color:var(--navy)}
+  .btn.gold:hover{background:var(--gold-soft);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35)}
+  .btn.ghost:hover{border-color:var(--gold-soft);color:var(--gold-soft)}
+  .heroStats{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+  .heroStats div b{font-family:var(--serif);font-size:26px;color:var(--gold-soft);display:block}
+  .heroStats div small{color:#aab2cc;font-size:12px}
+  .heroArt{display:flex;justify-content:center}
+
+  /* ---------- PHONE ---------- */
+  .phone{width:330px;height:680px;border-radius:44px;padding:14px;background:#0a1330;box-shadow:0 30px 70px rgba(0,0,0,.5);border:2px solid #26325a;position:relative}
+  .phone::before{content:"";position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#0a1330;border-radius:0 0 16px 16px;z-index:6}
+  .screen{width:100%;height:100%;background:var(--paper);border-radius:32px;overflow:hidden;position:relative;color:var(--ink)}
+  .wb{color:#132038}
+  .screen .view{display:none;height:100%;flex-direction:column}
+  .screen .view.active{display:flex;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .sbar{height:38px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 20px 4px;font-size:11px;font-weight:700;color:var(--navy)}
+  .appbar{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;font-weight:600}
+  .appbar .diya{width:22px;height:22px}
+  .appbar small{font-weight:400;color:var(--gold-soft);font-size:10px;letter-spacing:1px}
+  .body{flex:1;overflow-y:auto;padding:16px}
+  .body::-webkit-scrollbar{width:0}
+
+  .tabbar{display:flex;border-top:1px solid var(--line);background:#fff}
+  .tabbar button{flex:1;border:none;background:none;padding:9px 0 11px;font-size:9.5px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
+  .tabbar button .ic{font-size:17px;line-height:1}
+  .tabbar button.on{color:var(--navy)}
+  .tabbar button.on .ic{filter:none}
+
+  /* generic cards */
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+  .card h4{font-size:13px;margin-bottom:2px}
+  .card p{font-size:11.5px;color:var(--muted)}
+  .row{display:flex;align-items:center;gap:11px}
+  .ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;background:var(--cream)}
+  .tagchip{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.4px}
+  .t-green{background:#e4f5ee;color:var(--green)}
+  .t-amber{background:#fbf1d8;color:#a67c1a}
+  .t-red{background:#fbe6e6;color:var(--red)}
+  .sec-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:6px 2px 10px;font-weight:700}
+
+  /* login */
+  .login{background:linear-gradient(170deg,var(--navy),#0b1430);color:#fff;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px}
+  .login .diya{width:56px;height:56px;margin-bottom:18px}
+  .login h2{font-family:var(--serif);font-size:30px;margin-bottom:6px}
+  .login .hi{color:var(--gold-soft);font-style:italic}
+  .login p{color:#b9c1db;font-size:13px;margin-bottom:26px;max-width:250px}
+  .login .aad{background:#fff;color:var(--navy);border-radius:12px;padding:12px;font-weight:700;font-size:13px;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;border:none;margin-bottom:10px}
+  .login .aad small{background:#138808;color:#fff;font-size:8px;padding:2px 5px;border-radius:4px;letter-spacing:.5px}
+  .login .dl{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:12px;padding:12px;font-weight:600;font-size:12px;width:100%;cursor:pointer}
+  .login .trust{margin-top:22px;font-size:10px;color:#8b93b3;line-height:1.6}
+
+  /* legacy score ring */
+  .ring{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--gold) 0 72%,#e9e4d6 72% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto}
+  .ring .inner{width:86px;height:86px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring b{font-family:var(--serif);font-size:26px;color:var(--navy)}
+  .ring small{font-size:9px;color:var(--muted);letter-spacing:.5px}
+
+  .quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .quick button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 10px;text-align:left;cursor:pointer;font-family:var(--sans)}
+  .quick button b{font-size:12px;display:block}
+  .quick button span{font-size:10px;color:var(--muted)}
+  .quick .em{font-size:18px;display:block;margin-bottom:5px}
+
+  /* nominee */
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto}
+
+  /* wishes */
+  .wish{border-left:3px solid var(--gold);background:#fff;border-radius:0 14px 14px 0;padding:12px 14px;margin-bottom:12px;box-shadow:var(--shadow);box-shadow:0 6px 18px rgba(15,27,61,.06)}
+  .wish em{color:var(--navy);font-family:var(--serif);font-size:13px}
+  .wish .to{font-size:10px;color:var(--muted);margin-top:6px}
+
+  /* AI chat */
+  .chat{display:flex;flex-direction:column;gap:10px}
+  .bub{max-width:82%;padding:10px 13px;border-radius:16px;font-size:12px;line-height:1.5}
+  .bub.ai{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+  .bub.me{background:var(--navy);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+  .bub.ai b{color:var(--navy)}
+  .langbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .langbar span{font-size:9px;border:1px solid var(--line);border-radius:20px;padding:3px 8px;color:var(--muted)}
+  .langbar span.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .mic{margin-top:12px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:30px;padding:8px 8px 8px 14px}
+  .mic input{border:none;flex:1;font-size:12px;outline:none;font-family:var(--sans)}
+  .mic .mbtn{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#fff;border:none;font-size:15px;cursor:pointer}
+
+  /* nominee claim (posthumous) */
+  .claimHead{background:linear-gradient(160deg,#20305c,#0e1a3c);color:#fff;padding:18px 16px;border-radius:0 0 20px 20px;text-align:center}
+  .claimHead h3{font-family:var(--serif);font-size:17px}
+  .claimHead p{font-size:10.5px;color:#b9c1db;margin-top:3px}
+  .step{display:flex;gap:12px;margin-bottom:6px}
+  .step .dot{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+  .step .dot.done{background:var(--green)}
+  .step .dot.now{background:var(--gold)}
+  .step .dot.todo{background:#cfd4e0}
+  .step .line{border-left:2px dashed var(--line);margin-left:11px;padding:0 0 14px 20px;margin-top:-6px}
+  .step .line b{font-size:12px}
+  .step .line p{font-size:10.5px;color:var(--muted)}
+
+  /* journey toggle */
+  .jtoggle{display:flex;gap:12px;justify-content:center;margin:0 auto 26px;max-width:680px;flex-wrap:wrap}
+  .jtoggle button{flex:1;min-width:250px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.22);color:#dfe3ef;border-radius:14px;padding:14px 18px;cursor:pointer;text-align:left;transition:.2s;font-family:var(--sans)}
+  .jtoggle button .jt{font-weight:700;font-size:15px;color:#fff;display:block;margin-bottom:2px}
+  .jtoggle button small{font-size:11px;color:#aab2cc}
+  .jtoggle button.on{background:var(--gold);border-color:var(--gold)}
+  .jtoggle button.on .jt,.jtoggle button.on small{color:var(--navy)}
+
+  /* whatsapp outreach screen */
+  .wahead{background:#075e54;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .wahead .wav{width:36px;height:36px;border-radius:50%;background:#128c7e;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .wahead b{font-size:13px}
+  .wahead small{font-size:10px;color:#a7ccc5;display:block}
+  .wabody{flex:1;overflow-y:auto;padding:14px;background:#ece5dd;display:flex;flex-direction:column}
+  .wabody::-webkit-scrollbar{width:0}
+  .wb{max-width:84%;padding:8px 11px;border-radius:10px;font-size:12px;margin-bottom:8px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+  .wb.in{background:#fff;align-self:flex-start;border-top-left-radius:2px}
+  .wb.out{background:#dcf8c6;align-self:flex-end;border-top-right-radius:2px}
+  .wb .tm{font-size:8px;color:#8fa39f;text-align:right;margin-top:3px}
+  .wacta{background:var(--navy);color:#fff;text-align:center;border-radius:10px;padding:10px;font-size:12px;font-weight:700;margin:4px 0 2px;cursor:pointer;border:none;width:100%}
+
+  /* threshold unlock */
+  .shares{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+  .share{border:1px solid var(--line);border-radius:12px;padding:9px;display:flex;align-items:center;gap:8px;background:#fff;opacity:.45;transition:.45s}
+  .share .sdot{width:24px;height:24px;border-radius:50%;background:#cfd4e0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex:0 0 auto;transition:.45s}
+  .share b{font-size:10.5px;display:block;line-height:1.2}
+  .share span{color:var(--muted);font-size:8.5px}
+  .share.lit{opacity:1;border-color:var(--green);box-shadow:0 4px 12px rgba(31,157,107,.15)}
+  .share.lit .sdot{background:var(--green)}
+  .share.na{opacity:.4}
+  .share.na .sdot{background:#e3b7b7}
+  .thmeter{text-align:center;font-size:11px;font-weight:700;color:var(--navy);background:var(--cream);border-radius:10px;padding:8px;margin-bottom:10px}
+  .unlockedPanel{display:none;animation:fade .4s ease}
+
+  /* screen switcher (external) */
+  .switch{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:22px}
+  .switch button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#dfe3ef;font-size:11px;padding:7px 12px;border-radius:20px;cursor:pointer;font-weight:600;transition:.2s}
+  .switch button.on,.switch button:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+
+  /* ---------- SECTIONS ---------- */
+  section.blk{padding:72px 0}
+  .eyebrow{text-align:center;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px}
+  .h2{text-align:center;font-family:var(--serif);font-size:36px;color:var(--navy);margin-bottom:12px}
+  .lead{text-align:center;max-width:660px;margin:0 auto 42px;color:var(--muted);font-size:16px}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .fcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px;transition:.25s}
+  .fcard:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .fcard .fi{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+  .fcard h3{font-size:18px;color:var(--navy);margin-bottom:7px}
+  .fcard p{font-size:14px;color:var(--muted)}
+  .fcard .no{font-family:var(--serif);color:var(--gold);font-size:13px;font-weight:700}
+
+  /* board */
+  .board{background:var(--navy);color:#fff}
+  .board .h2{color:#fff}
+  .board .lead{color:#aeb6d2}
+  .people{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .person{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:18px}
+  .person .pn{font-weight:700;font-size:14px;color:var(--gold-soft)}
+  .person .pr{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8b93b3;margin-bottom:9px}
+  .person .pq{font-size:12.5px;color:#d7dbe9;font-style:italic;line-height:1.5}
+
+  /* market */
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px;text-align:center}
+  .stat b{font-family:var(--serif);font-size:40px;color:var(--navy);display:block}
+  .stat span{font-size:13px;color:var(--muted)}
+  .stat i{font-style:normal;color:var(--gold);font-size:12px;display:block;margin-top:8px;font-weight:700}
+
+  /* model / roadmap */
+  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .mcard{border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--paper)}
+  .mcard.hi{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .mcard h3{font-size:17px;margin-bottom:4px}
+  .mcard .price{font-family:var(--serif);font-size:26px;color:var(--gold);margin-bottom:12px}
+  .mcard ul{list-style:none;font-size:13px}
+  .mcard li{padding:6px 0;border-bottom:1px dashed rgba(0,0,0,.08);display:flex;gap:8px}
+  .mcard.hi li{border-color:rgba(255,255,255,.14)}
+  .mcard li::before{content:"✓";color:var(--gold)}
+
+  .road{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:10px}
+  .rstep{position:relative;padding:26px 16px 0;text-align:center}
+  .rstep::before{content:"";position:absolute;top:8px;left:0;right:0;height:3px;background:var(--line)}
+  .rstep .rd{width:16px;height:16px;border-radius:50%;background:var(--gold);position:absolute;top:1px;left:50%;transform:translateX(-50%);border:3px solid var(--cream)}
+  .rstep b{display:block;font-size:13px;color:var(--navy)}
+  .rstep small{font-size:11px;color:var(--muted)}
+  .rstep span{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:1px}
+
+  footer{background:#0b1430;color:#8b93b3;text-align:center;padding:40px 22px;font-size:12px}
+  footer .diya{width:26px;height:26px;margin:0 auto 12px}
+  footer b{color:var(--gold-soft)}
+
+  @media(max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;text-align:center}
+    .heroStats{justify-content:center}
+    .hero h1{font-size:40px}
+    .grid3,.people,.mgrid,.road{grid-template-columns:1fr 1fr}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media(max-width:620px){
+    .grid3,.people,.mgrid,.road,.grid2{grid-template-columns:1fr}
+    .top nav{display:none}
+    .h2{font-size:28px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP NAV ===== -->
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="diya"></div>
+      <span>VIRASAT<small>विरासत · Digital Legacy</small></span>
+    </div>
+    <nav>
+      <a href="#problem">The Problem</a>
+      <a href="#product">The Product</a>
+      <a href="#board">The Board</a>
+      <a href="#model">Model</a>
+    </nav>
+    <a class="pill" href="#product">Moonshot Avishkar 2026</a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="kick">Posthumous Digital Autonomy</span>
+      <h1>Your digital life,<br><span class="hi">honoured</span> after you're gone.</h1>
+      <p class="tag">India has no system for death. Money locks, SIMs recycle to strangers, identities leak, and last wishes vanish. <b style="color:#e7cf95">Virasat</b> turns death from a data black hole into a dignified, consented handover — built on Aadhaar, DigiLocker & DPDP §14.</p>
+      <div class="cta">
+        <a class="btn gold" href="#product">Open the Prototype ↓</a>
+        <a class="btn ghost" href="#board">See how the team decided</a>
+      </div>
+      <div class="heroStats">
+        <div><b>₹72,000 cr+</b><small>dormant, unclaimed deposits (RBI DEA Fund)</small></div>
+        <div><b>~25,000</b><small>Indians die every day</small></div>
+        <div><b>90 days</b><small>till a SIM is recycled to a stranger</small></div>
+      </div>
+    </div>
+    <div class="heroArt">
+      <!-- phone lives in product section; small teaser here -->
+      <div style="text-align:center">
+        <div class="diya" style="width:120px;height:120px;margin:20px auto"></div>
+        <p style="color:#c8cee0;font-family:var(--serif);font-style:italic;font-size:18px;max-width:240px">"A life should not end in a customer-care queue."</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROBLEM / MARKET ===== -->
+<section class="blk" id="problem">
+  <div class="wrap">
+    <div class="eyebrow">The Indian Reality</div>
+    <h2 class="h2">One death. Three silent crises.</h2>
+    <p class="lead">The family doesn't just grieve — they fight banks, telcos and platforms with no map, no keys, and no law that treats death as anything but a security breach.</p>
+    <div class="grid3">
+      <div class="stat"><b>₹72,000cr+</b><span>Unclaimed deposits families never knew existed, sitting in RBI's DEA Fund.</span><i>THE MONEY IS LOCKED</i></div>
+      <div class="stat"><b>90 days</b><span>A deceased person's number can be reassigned to a stranger — inheriting their OTPs & identity.</span><i>THE IDENTITY LEAKS</i></div>
+      <div class="stat"><b>0 laws</b><span>No dedicated digital-inheritance law. DPDP §14 allows a nominee — but there's no product for it.</span><i>THE WISHES VANISH</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUCT / PROTOTYPE ===== -->
+<section class="blk" id="product" style="background:var(--navy);color:#fff">
+  <div class="wrap">
+    <div class="eyebrow">The MVP · Live Prototype</div>
+    <h2 class="h2" style="color:#fff">Meet Virasat</h2>
+    <p class="lead" style="color:#aeb6d2">Two clearly separate journeys — pick one, then tap through the screens under the phone. <b style="color:#e7cf95">The Planner</b> is you, while you're alive. <b style="color:#e7cf95">The Nominee</b> is the person you trust, after you're gone — and their experience is our highlight: <i>seamless, one-tap, no coordination, no office</i>.</p>
+
+    <div class="jtoggle">
+      <button data-j="planner" class="on"><span class="jt">🌱 Your Journey — The Planner</span><small>While you're alive · plan, protect, record wishes</small></button>
+      <button data-j="nominee"><span class="jt">🕊️ Nominee's Journey — After you're gone</span><small>We reach out · one tap with their own Aadhaar · done</small></button>
+    </div>
+
+    <div style="display:flex;justify-content:center">
+      <div class="phone">
+        <div class="screen">
+
+          <!-- 1. LOGIN -->
+          <div class="view active" data-screen="login">
+            <div class="login">
+              <div class="diya"></div>
+              <h2>Vi<span class="hi">रा</span>sat</h2>
+              <p>The dignified way to plan, protect and pass on your digital & financial life.</p>
+              <button class="aad" onclick="go('home')">🔐 Continue with Aadhaar <small>UIDAI</small></button>
+              <button class="dl" onclick="go('home')">📄 Link DigiLocker</button>
+              <div class="trust">🔒 Zero-knowledge vault · We can never read your data<br>Compliant with DPDP Act 2023 · Built on India Stack</div>
+            </div>
+          </div>
+
+          <!-- 2. HOME -->
+          <div class="view" data-screen="home">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Namaste, Anjali<br><small>YOUR LEGACY IS 72% READY</small></div></div>
+            <div class="body">
+              <div class="ring"><div class="inner"><b>72%</b><small>LEGACY SCORE</small></div></div>
+              <div class="quick">
+                <button onclick="go('vault')"><span class="em">🗄️</span><b>Legacy Vault</b><span>7 assets secured</span></button>
+                <button onclick="go('nominee')"><span class="em">👥</span><b>Nominees</b><span>3 trusted people</span></button>
+                <button onclick="go('wishes')"><span class="em">💌</span><b>Last Wishes</b><span>4 messages sealed</span></button>
+                <button onclick="go('saarthi')"><span class="em">🪔</span><b>Saarthi AI</b><span>Ask anything</span></button>
+              </div>
+              <div class="sec-title">Needs your attention</div>
+              <div class="card"><div class="row"><div class="ico">📱</div><div style="flex:1"><h4>SIM & primary number</h4><p>No handover plan — will recycle in 90 days.</p></div><span class="tagchip t-red">Add</span></div></div>
+              <div class="card"><div class="row"><div class="ico">🏦</div><div style="flex:1"><h4>HDFC savings ••4021</h4><p>Nominee assigned · discovery via AA on</p></div><span class="tagchip t-green">Ready</span></div></div>
+            </div>
+            <div class="tabbar">
+              <button class="on" onclick="go('home')"><span class="ic">🏠</span>Home</button>
+              <button onclick="go('vault')"><span class="ic">🗄️</span>Vault</button>
+              <button onclick="go('wishes')"><span class="ic">💌</span>Wishes</button>
+              <button onclick="go('saarthi')"><span class="ic">🪔</span>Saarthi</button>
+              <button onclick="go('claim')"><span class="ic">🕊️</span>Claim</button>
+            </div>
+          </div>
+
+          <!-- 3. VAULT -->
+          <div class="view" data-screen="vault">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Legacy Vault<br><small>END-TO-END ENCRYPTED</small></div></div>
+            <div class="body">
+              <div class="sec-title">💰 Financial</div>
+              <div class="card"><div class="row"><div class="ico">🏦</div><div style="flex:1"><h4>HDFC Bank ••4021</h4><p>Nominee: Rohan (spouse)</p></div><span class="tagchip t-green">Ready</span></div></div>
+              <div class="card"><div class="row"><div class="ico">📲</div><div style="flex:1"><h4>UPI / GPay</h4><p>Access note sealed for nominee</p></div><span class="tagchip t-green">Ready</span></div></div>
+              <div class="card"><div class="row"><div class="ico">📈</div><div style="flex:1"><h4>Zerodha Demat</h4><p>Nominee pending</p></div><span class="tagchip t-amber">Todo</span></div></div>
+              <div class="sec-title">🌐 Digital & Identity</div>
+              <div class="card"><div class="row"><div class="ico">📱</div><div style="flex:1"><h4>Airtel ••88932</h4><p>Action: block recycling + memorialise</p></div><span class="tagchip t-red">Set</span></div></div>
+              <div class="card"><div class="row"><div class="ico">📸</div><div style="flex:1"><h4>Instagram · WhatsApp</h4><p>Wish: memorialise, don't delete</p></div><span class="tagchip t-green">Ready</span></div></div>
+              <div class="card"><div class="row"><div class="ico">📺</div><div style="flex:1"><h4>Netflix · Prime</h4><p>Auto-cancel on trigger</p></div><span class="tagchip t-green">Ready</span></div></div>
+            </div>
+            <div class="tabbar">
+              <button onclick="go('home')"><span class="ic">🏠</span>Home</button>
+              <button class="on" onclick="go('vault')"><span class="ic">🗄️</span>Vault</button>
+              <button onclick="go('wishes')"><span class="ic">💌</span>Wishes</button>
+              <button onclick="go('saarthi')"><span class="ic">🪔</span>Saarthi</button>
+              <button onclick="go('claim')"><span class="ic">🕊️</span>Claim</button>
+            </div>
+          </div>
+
+          <!-- 4. NOMINEE -->
+          <div class="view" data-screen="nominee">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Your Nominees<br><small>DPDP ACT §14 · DIGITAL NOMINEE</small></div></div>
+            <div class="body">
+              <div class="card"><div class="row"><div class="avatar">R</div><div style="flex:1"><h4>Rohan Mehta</h4><p>Spouse · Finances + SIM</p></div><span class="tagchip t-green">Verified</span></div></div>
+              <div class="card"><div class="row"><div class="avatar">M</div><div style="flex:1"><h4>Meera (Mother)</h4><p>Social & messages</p></div><span class="tagchip t-green">Verified</span></div></div>
+              <div class="card"><div class="row"><div class="avatar">A</div><div style="flex:1"><h4>Adv. Kapoor</h4><p>Executor · legal escalation</p></div><span class="tagchip t-amber">Invited</span></div></div>
+              <div class="card" style="border-style:dashed;text-align:center;color:var(--muted);cursor:pointer" onclick="go('vault')"><b style="color:var(--navy);font-size:13px">＋ Assign another nominee</b><p>Split assets across trusted people</p></div>
+              <div style="background:#fbf1d8;border-radius:12px;padding:12px;font-size:11px;color:#8a6a18">🛡️ No single nominee can act alone on money — release needs the <b>Trigger</b> (death certificate + Aadhaar + co-consent).</div>
+            </div>
+            <div class="tabbar">
+              <button onclick="go('home')"><span class="ic">🏠</span>Home</button>
+              <button onclick="go('vault')"><span class="ic">🗄️</span>Vault</button>
+              <button onclick="go('wishes')"><span class="ic">💌</span>Wishes</button>
+              <button onclick="go('saarthi')"><span class="ic">🪔</span>Saarthi</button>
+              <button onclick="go('claim')"><span class="ic">🕊️</span>Claim</button>
+            </div>
+          </div>
+
+          <!-- 5. WISHES -->
+          <div class="view" data-screen="wishes">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Last Wishes & Messages<br><small>DELIVERED ON THE TRIGGER</small></div></div>
+            <div class="body">
+              <div class="wish"><em>"Rohan — the FD for Aarav's college is in SBI, not our joint account. Promise me he finishes engineering."</em><div class="to">📩 To: Rohan · 🔓 Unlocks: on verification</div></div>
+              <div class="wish"><em>"I always wanted to take Ma to see the Golden Temple. Use my LIC maturity — take her for me."</em><div class="to">🙏 An unfulfilled wish · To be honoured by heirs</div></div>
+              <div class="wish"><em>"My Instagram — memorialise it, don't delete. Let my students keep learning from the posts."</em><div class="to">📸 To: Meera · Action: memorialise</div></div>
+              <div class="wish"><em>"Video message for Aarav's 21st birthday 🎥"</em><div class="to">🎬 Scheduled delivery · 14 Aug 2038</div></div>
+              <div class="card" style="border-style:dashed;text-align:center;cursor:pointer" onclick="go('saarthi')"><b style="color:var(--navy);font-size:13px">＋ Record a new wish</b><p>Text · voice · video · a wish to be fulfilled</p></div>
+            </div>
+            <div class="tabbar">
+              <button onclick="go('home')"><span class="ic">🏠</span>Home</button>
+              <button onclick="go('vault')"><span class="ic">🗄️</span>Vault</button>
+              <button class="on" onclick="go('wishes')"><span class="ic">💌</span>Wishes</button>
+              <button onclick="go('saarthi')"><span class="ic">🪔</span>Saarthi</button>
+              <button onclick="go('claim')"><span class="ic">🕊️</span>Claim</button>
+            </div>
+          </div>
+
+          <!-- 6. SAARTHI AI -->
+          <div class="view" data-screen="saarthi">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Saarthi · सारथी<br><small>YOUR GRIEF-AWARE GUIDE · 11 LANGUAGES</small></div></div>
+            <div class="body">
+              <div class="langbar"><span class="on">हिन्दी</span><span>English</span><span>தமிழ்</span><span>বাংলা</span><span>తెలుగు</span><span>मराठी</span><span>+5</span></div>
+              <div class="chat">
+                <div class="bub ai"><b>Saarthi:</b> मैं आपके साथ हूँ, रोहन जी। 🙏 पहले हम ज़रूरी चीज़ें संभालते हैं। क्या आपके पास अंजलि जी का <b>मृत्यु प्रमाण-पत्र</b> है?</div>
+                <div class="bub me">Yes, it's on DigiLocker.</div>
+                <div class="bub ai"><b>Saarthi:</b> बहुत अच्छा. मैंने उसे सत्यापित कर लिया ✅. मुझे 3 बैंक मिले जहाँ उनका पैसा है — जिनमें से <b>2 आपको पता भी नहीं थे</b>. क्या मैं दावा (claim) की प्रक्रिया शुरू करूँ?</div>
+                <div class="bub me">Please. And the SIM?</div>
+                <div class="bub ai"><b>Saarthi:</b> मैं Airtel को सूचित कर रही हूँ ताकि नंबर <b>किसी और को न मिले</b>, और Instagram को memorialise कर रही हूँ. आपको कुछ नहीं भरना — बस एक बार OTP से मंज़ूरी दें. 🕊️</div>
+              </div>
+              <div class="mic"><input placeholder="बोलिए या लिखिए…" /><button class="mbtn">🎙️</button></div>
+            </div>
+            <div class="tabbar">
+              <button onclick="go('home')"><span class="ic">🏠</span>Home</button>
+              <button onclick="go('vault')"><span class="ic">🗄️</span>Vault</button>
+              <button onclick="go('wishes')"><span class="ic">💌</span>Wishes</button>
+              <button class="on" onclick="go('saarthi')"><span class="ic">🪔</span>Saarthi</button>
+              <button onclick="go('claim')"><span class="ic">🕊️</span>Claim</button>
+            </div>
+          </div>
+
+          <!-- 7. CLAIM (posthumous nominee view) -->
+          <div class="view" data-screen="claim">
+            <div class="claimHead"><h3>Settlement for Anjali Sharma</h3><p>In loving memory · 1984 – 2026 · Guided by Saarthi</p></div>
+            <div class="body">
+              <div class="step"><div class="dot done">✓</div><div style="flex:1"><b>Tier-1 · Protected</b> <span class="tagchip t-green">in 1 hr</span></div></div>
+              <div class="step"><div class="line"><b>SIM recycle blocked · subscriptions paused · fraud-watch on</b><p>Reversible. Fired on a soft signal — no money touched.</p></div></div>
+              <div class="step"><div class="dot done">✓</div><div style="flex:1"><b>Tier-2 · Death verified</b></div></div>
+              <div class="step"><div class="line"><b>DigiLocker certificate + Aadhaar + your co-consent + waiting period</b><p>All nominees notified. Fraud-proof.</p></div></div>
+              <div class="step"><div class="dot done">✓</div><div style="flex:1"><b>Assets discovered</b></div></div>
+              <div class="step"><div class="line"><b>3 banks · UPI · 2 investments via Account Aggregator</b><p>Incl. ₹4.2L in a forgotten account.</p></div></div>
+              <div class="step"><div class="dot now">4</div><div style="flex:1"><b>Claims orchestrated</b></div></div>
+              <div class="step"><div class="line"><b>Nominee claims filed · UDGAM raised · Instagram memorialised</b><p>Concierge walking papers to the branch. We orchestrate — the bank keeps final succession control.</p></div></div>
+              <div class="step"><div class="dot todo">5</div><div style="flex:1"><b>Wishes delivered</b></div></div>
+              <div class="step" style="border:none"><div class="line" style="border:none"><b>4 sealed messages released to family</b><p>Including "Take Ma to the Golden Temple."</p></div></div>
+              <button class="btn gold" style="width:100%;text-align:center" onclick="go('n_safetynet')">See the safety net →</button>
+            </div>
+          </div>
+
+          <!-- ===== NOMINEE JOURNEY ===== -->
+
+          <!-- N1. WHATSAPP OUTREACH -->
+          <div class="view" data-screen="n_whatsapp">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="wahead"><div class="wav">🪔</div><div style="flex:1"><b>Saarthi · Virasat</b><small>business account · verified ✔</small></div><span style="font-size:15px">📞</span></div>
+            <div class="wabody">
+              <div style="text-align:center;font-size:8.5px;color:#6b6257;background:#fdf3d1;border-radius:6px;padding:5px 8px;align-self:center;margin-bottom:6px;line-height:1.5">🔔 <b>Trigger:</b> LIC death-claim filed → certificate auto-verified via DigiLocker</div>
+              <div style="text-align:center;font-size:9px;color:#7a8783;background:#e7f0ff;border-radius:6px;padding:4px 8px;align-self:center;margin-bottom:10px">🔒 We reached out to you — you don't have to find us</div>
+              <div class="wb in">Rohan ji, we are so sorry for the loss of your father. 🙏<div class="tm">10:02</div></div>
+              <div class="wb in">Your father had trusted <b>Virasat</b> to protect his digital & financial life. Whenever you feel ready, I can help you settle everything — not just one account.<div class="tm">10:02</div></div>
+              <div class="wb in">There is nothing to download and no office to visit. It takes about two minutes, and you'll only use <b>your own Aadhaar</b>.<div class="tm">10:03</div></div>
+              <div class="wb out">Okay. What do I do?<div class="tm">10:15</div></div>
+              <div class="wb in">Just tap below. I'll be with you at every step. 🕊️<div class="tm">10:15</div></div>
+              <button class="wacta" onclick="go('n_unlock')">🔓 Open my father's Virasat →</button>
+              <div style="text-align:center;font-size:8px;color:#7a8783;margin-top:8px;line-height:1.5">No message yet? Any nominee can also start it in-app — the DigiLocker certificate is still required to unlock.</div>
+            </div>
+          </div>
+
+          <!-- N2. ONE-TAP AADHAAR UNLOCK + THRESHOLD -->
+          <div class="view" data-screen="n_unlock">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Secure Access<br><small>NOMINEE: ROHAN MEHTA (SON)</small></div></div>
+            <div class="body">
+              <div style="text-align:center;margin-bottom:6px"><div style="font-size:34px">🗝️</div><h4 style="font-size:14px;color:var(--navy)">One tap unlocks what's yours</h4><p style="font-size:11px;color:var(--muted)">You never use your father's password. Your own identity + proof of his passing turns the key.</p></div>
+              <div class="thmeter" id="thmeterTxt">Tap below — 0 of 3 shares combined</div>
+              <div class="shares">
+                <div class="share na" id="s-deceased"><div class="sdot">✕</div><div><b>Account holder</b><span>dies with him — not used</span></div></div>
+                <div class="share" id="s-nominee"><div class="sdot">1</div><div><b>You · Rohan</b><span>your Aadhaar OTP</span></div></div>
+                <div class="share" id="s-enclave"><div class="sdot">2</div><div><b>Virasat enclave</b><span>released on verified death</span></div></div>
+                <div class="share" id="s-escrow"><div class="sdot">3</div><div><b>Neutral escrow</b><span>auto-contributes</span></div></div>
+                <div class="share na" id="s-nomineeB"><div class="sdot">–</div><div><b>Meera (other nominee)</b><span>NOT required — she has her own</span></div></div>
+              </div>
+              <button class="btn gold" id="unlockBtn" style="width:100%;text-align:center" onclick="runUnlock()">🔐 Authenticate with my Aadhaar OTP</button>
+              <div class="unlockedPanel" id="unlockedPanel">
+                <div style="background:#e4f5ee;border:1px solid #bfe6d5;border-radius:12px;padding:12px;margin-top:12px;text-align:center;font-size:12px;color:var(--green);font-weight:700">✓ 3-of-5 threshold met · key rebuilt on your device</div>
+                <button class="btn gold" style="width:100%;text-align:center;margin-top:10px" onclick="go('n_compartment')">See what's yours →</button>
+              </div>
+              <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6">🛡️ No relatives to coordinate. No shares to chase.<br>Virasat alone can never open this — a real, state-verified death is required.</div>
+              <div style="background:#eef1f7;border-radius:10px;padding:9px 11px;font-size:9px;color:var(--muted);margin-top:10px;line-height:1.6">📄 <b style="color:var(--navy)">The death certificate</b> is issued by the municipal registrar and read via <b>DigiLocker</b> — uploaded by the family/nominee or fetched with consent. <b>Virasat never issues or forges it.</b></div>
+            </div>
+          </div>
+
+          <!-- N3. YOUR COMPARTMENT -->
+          <div class="view" data-screen="n_compartment">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>Your Compartment<br><small>FINANCIAL · ASSIGNED TO YOU</small></div></div>
+            <div class="body">
+              <div style="background:#fbf1d8;border-radius:12px;padding:10px 12px;font-size:10.5px;color:#8a6a18;margin-bottom:12px">👁️ You see only <b>your</b> compartment. Your father's private messages & social legacy are in <b>Meera's</b> compartment — she opens hers independently.</div>
+              <div class="sec-title">💰 What your father left you to handle</div>
+              <div class="card"><div class="row"><div class="ico">🏦</div><div style="flex:1"><h4>HDFC ••4021</h4><p>You are the <b>nominee (trustee)</b> · heirs: Meera, Aarav</p></div><span class="tagchip t-green">Found</span></div></div>
+              <div class="card"><div class="row"><div class="ico">🏦</div><div style="flex:1"><h4>SBI ••7788</h4><p>You didn't know this existed · ₹2.1L</p></div><span class="tagchip t-amber">New</span></div></div>
+              <div class="card"><div class="row"><div class="ico">💤</div><div style="flex:1"><h4>Dormant account · ₹4.2L</h4><p>Found via UDGAM / DEA Fund</p></div><span class="tagchip t-amber">New</span></div></div>
+              <div class="card"><div class="row"><div class="ico">🛡️</div><div style="flex:1"><h4>LIC policy ••309</h4><p>Death claim pre-filled by Saarthi</p></div><span class="tagchip t-green">Ready</span></div></div>
+              <div class="wish" style="box-shadow:none;border-color:var(--gold)"><em>"Rohan — the FD for Aarav's college is in SBI. Promise me he finishes engineering."</em><div class="to">💌 A message your father left for you</div></div>
+              <button class="btn gold" style="width:100%;text-align:center" onclick="go('n_approve')">Begin settlement →</button>
+            </div>
+          </div>
+
+          <!-- N4. ASYNC DUAL-CONTROL APPROVAL -->
+          <div class="view" data-screen="n_approve">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>High-value release<br><small>DUAL APPROVAL · NO MEETING NEEDED</small></div></div>
+            <div class="body">
+              <div class="card"><div class="row"><div class="ico">🔐</div><div style="flex:1"><h4>Joint Fixed Deposit · ₹18,00,000</h4><p>Large release needs a second nominee's OK</p></div></div></div>
+              <div class="sec-title">Approval status</div>
+              <div class="card"><div class="row"><div class="avatar">R</div><div style="flex:1"><h4>You · Rohan</h4><p>Initiated the release</p></div><span class="tagchip t-green">✓ Done</span></div></div>
+              <div class="card"><div class="row"><div class="avatar" style="background:#c7ccda">M</div><div style="flex:1"><h4>Meera (mother)</h4><p>Pinged on her phone in Kanpur</p></div><span class="tagchip t-amber" id="meeraChip">Waiting…</span></div></div>
+
+              <div style="border:1px dashed var(--line);border-radius:14px;padding:14px;margin-top:6px;text-align:center;background:#fff">
+                <p style="font-size:10.5px;color:var(--muted);margin-bottom:8px">📲 What Meera sees on her phone, wherever she is:</p>
+                <div style="background:var(--navy);color:#fff;border-radius:12px;padding:12px;text-align:left">
+                  <b style="font-size:12px;color:var(--gold-soft)">🔔 Virasat</b>
+                  <p style="font-size:11px;margin:4px 0 10px">Rohan is releasing the joint FD (₹18,00,000) from your late husband's estate. Approve?</p>
+                  <button class="btn gold" style="padding:8px 16px;font-size:12px" onclick="meeraApprove()" id="meeraBtn">Approve</button>
+                </div>
+              </div>
+              <div id="approvedBox" style="display:none;margin-top:12px">
+                <div style="background:#e4f5ee;border:1px solid #bfe6d5;border-radius:12px;padding:12px;text-align:center;font-size:12px;color:var(--green);font-weight:700">✓ Meera approved from her kitchen — one tap, no travel, no call</div>
+                <button class="btn gold" style="width:100%;text-align:center;margin-top:10px" onclick="go('claim')">See full settlement →</button>
+              </div>
+              <div style="background:#eef1f7;border-radius:12px;padding:10px 12px;font-size:9.5px;color:var(--muted);margin-top:12px;line-height:1.6">🕸️ <b style="color:var(--navy)">If a nominee is unreachable or has also passed:</b> after the waiting period, a <b>backup nominee</b> and a <b>neutral escrow (law firm)</b> release that compartment via time-delay. The estate is <b>never frozen</b> by one missing person.</div>
+              <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:12px">Everyday actions need just you. Only a few high-value ones ask a second nominee — always a tap, never a meeting.</div>
+            </div>
+          </div>
+
+          <!-- N0. HOW WE KNOW SOMEONE DIED -->
+          <div class="view" data-screen="n_detect">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>How we know<br><small>THE 3-CONFIDENCE CASCADE</small></div></div>
+            <div class="body">
+              <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.6">We <b>don't surveil</b> for death — there's no bulk registry feed. We act <b style="color:var(--navy)">in proportion to how sure we are.</b></div>
+              <div class="card" style="border-left:4px solid #c9a24b"><div class="row"><div class="ico">🟡</div><div style="flex:1"><h4>1 · Suspicion</h4><p>Inactivity · missed check-in</p></div></div><p style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.55">→ We ask the <b>account holder first</b> ("are you there?"). No condolences, nothing irreversible — it could just be a dead phone.</p></div>
+              <div class="card" style="border-left:4px solid #e08a2b"><div class="row"><div class="ico">🟠</div><div style="flex:1"><h4>2 · Assertion</h4><p>Nominee reports · insurer claim · bank flag</p></div></div><p style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.55">→ An accountable human says so → <b>Tier-1 reversible protection</b> begins (SIM no-recycle, fraud-watch) + gentle WhatsApp outreach.</p></div>
+              <div class="card" style="border-left:4px solid var(--green)"><div class="row"><div class="ico">🟢</div><div style="flex:1"><h4>3 · Proof</h4><p>DigiLocker certificate + Aadhaar match</p></div></div><p style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.55">→ The <b>state's own record</b> — the only thing that unlocks anything <b>irreversible</b> (money, deletion), after a waiting period.</p></div>
+              <button class="btn gold" style="width:100%;text-align:center" onclick="go('n_whatsapp')">This is how it begins →</button>
+            </div>
+          </div>
+
+          <!-- N5. THE SAFETY NET -->
+          <div class="view" data-screen="n_safetynet">
+            <div class="sbar"><span>9:41</span><span>▲ ▮ 100%</span></div>
+            <div class="appbar"><div class="diya"></div><div>The safety net<br><small>NO ONE GETS STRANDED</small></div></div>
+            <div class="body">
+              <div style="background:#eef1f7;border-radius:12px;padding:10px 12px;font-size:10.5px;color:var(--muted);margin-bottom:12px;line-height:1.6">🛡️ No single human — and <b>no algorithm</b> — is ever a single point of failure. Redundancy covers the reachable cases; the <b style="color:var(--navy)">law</b> covers the rest.</div>
+              <div class="card"><div class="row"><div class="ico">📵</div><div style="flex:1"><h4>Nominee unreachable / lost phone</h4><p>Social recovery — re-verify via Aadhaar. Compartment never lost.</p></div></div></div>
+              <div class="card"><div class="row"><div class="ico">🙅</div><div style="flex:1"><h4>Estranged / refuses to act</h4><p>Backup nominee → then neutral escrow (law firm) + time-delay. Estate never frozen.</p></div></div></div>
+              <div class="card"><div class="row"><div class="ico">🕊️</div><div style="flex:1"><h4>Nominee already passed</h4><p>Annual "legacy check-up" nudges re-assignment; backup covers the gap.</p></div></div></div>
+              <div class="card"><div class="row"><div class="ico">👥</div><div style="flex:1"><h4>ALL nominees gone / none named</h4><p>Asset-map surfaced to legal heirs via a succession certificate through escrow. We <b>never invent an heir.</b></p></div></div></div>
+              <div class="card"><div class="row"><div class="ico">⚖️</div><div style="flex:1"><h4>Family dispute</h4><p>Contested asset frozen for irreversible actions; routed to succession. We orchestrate, never adjudicate.</p></div></div></div>
+              <div style="background:#fbf1d8;border-radius:12px;padding:10px 12px;font-size:10.5px;color:#8a6a18;margin-top:6px;line-height:1.6">📌 <b>Nominee = trustee, not owner.</b> Every asset shows the legal heirs; funds are distributed per succession law.</div>
+              <button class="btn gold" style="width:100%;text-align:center;margin-top:12px" onclick="setJourney('planner')">Restart ↺</button>
+            </div>
+          </div>
+
+        </div><!-- /screen -->
+      </div><!-- /phone -->
+    </div>
+
+    <div class="switch" id="switch-planner">
+      <button data-go="login" class="on">1 · Aadhaar Login</button>
+      <button data-go="home">2 · Home</button>
+      <button data-go="vault">3 · Vault</button>
+      <button data-go="nominee">4 · Nominees</button>
+      <button data-go="wishes">5 · Last Wishes</button>
+      <button data-go="saarthi">6 · Saarthi AI</button>
+    </div>
+    <div class="switch" id="switch-nominee" style="display:none">
+      <button data-go="n_detect" class="on">1 · How we know</button>
+      <button data-go="n_whatsapp">2 · Saarthi reaches out</button>
+      <button data-go="n_unlock">3 · One-tap unlock</button>
+      <button data-go="n_compartment">4 · Your compartment</button>
+      <button data-go="n_approve">5 · Approve (dual-control)</button>
+      <button data-go="claim">6 · Settlement</button>
+      <button data-go="n_safetynet">7 · Safety net</button>
+    </div>
+    <p style="text-align:center;color:#8b93b3;font-size:12px;margin-top:14px">👆 Switch journeys above · then tap through the numbered steps</p>
+  </div>
+</section>
+
+<!-- ===== FIVE MVP PILLARS ===== -->
+<section class="blk">
+  <div class="wrap">
+    <div class="eyebrow">Ruthlessly cut to five</div>
+    <h2 class="h2">The MVP the board shipped</h2>
+    <p class="lead">Everything else — crypto, cross-border, automated money movement, court-grade wills — was parked for v2. These five earn trust and solve the real pain.</p>
+    <div class="grid3">
+      <div class="fcard"><div class="fi">🗄️</div><span class="no">01</span><h3>Legacy Vault</h3><p>Zero-knowledge & <b>minimal</b> — instructions, wishes & the asset map, not warehoused credentials. Threshold crypto + social recovery: nobody, including us, can open it alone.</p></div>
+      <div class="fcard"><div class="fi">👥</div><span class="no">02</span><h3>Nominees</h3><p>Assign a trusted person per asset, aligned to DPDP Act §14 — the "digital nominee" the law allows but no product delivers. Nominee = trustee, <b>not owner</b>; the institution keeps final succession control.</p></div>
+      <div class="fcard"><div class="fi">💌</div><span class="no">03</span><h3>Last Wishes</h3><p>Text, voice & video messages — and unfulfilled wishes to be honoured by heirs. The emotional core that acquires the <b>Planner</b> years before the death event.</p></div>
+      <div class="fcard"><div class="fi">🔐</div><span class="no">04</span><h3>Two-Tier Trigger</h3><p><b>Tier-1</b> protection is fast, reversible, low-proof. <b>Tier-2</b> (money/deletion) needs DigiLocker certificate + Aadhaar + nominee co-auth + a waiting period. We verify — we never move money or take title.</p></div>
+      <div class="fcard"><div class="fi">🪔</div><span class="no">05</span><h3>Saarthi AI</h3><p>Voice-first, grief-aware guide — <b>3 languages at launch</b>, 11 earned after PMF. Retrieval-grounded with a human in the loop for every consequential step.</p></div>
+      <div class="fcard" style="background:var(--navy);color:#fff"><div class="fi" style="background:var(--gold);color:var(--navy)">🇮🇳</div><span class="no" style="color:var(--gold-soft)">RAILS</span><h3 style="color:#fff">Built on India Stack</h3><p style="color:#c8cee0">Aadhaar · DigiLocker · Account Aggregator (DEPA) · UDGAM/DEA Fund · DPDP §14. We orchestrate DPI — we don't reinvent it.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TWO USERS ===== -->
+<section class="blk" style="background:var(--paper)">
+  <div class="wrap">
+    <div class="eyebrow">Insight from the offsite</div>
+    <h2 class="h2">Two users, not one</h2>
+    <p class="lead">The single biggest reframing of the day: "the survivor" is not one person. Two users, opposite in every dimension — so they need different front doors.</p>
+    <div class="grid2">
+      <div class="fcard"><div class="fi">🌱</div><h3>The Planner</h3><p><b>Proactive · younger · digitally native · low urgency.</b> Signs up for the <i>wish & message</i> feature — it's about love and control, not death. This is how the vault gets populated years before it's ever needed.</p><p style="margin-top:10px;color:var(--navy);font-weight:600">Front door: the emotional product (free, viral, self-serve).</p></div>
+      <div class="fcard"><div class="fi">🕊️</div><h3>The Survivor</h3><p><b>Reactive · often 55+ · low digital ability · 48-hour urgency.</b> The median case is a grieving widow who won't install a fintech app mid-mourning. She needs a <i>voice, in her language</i>, and is often set up by a younger relative.</p><p style="margin-top:10px;color:var(--navy);font-weight:600">Front door: Saarthi + an institution she already trusts.</p></div>
+    </div>
+    <div style="background:var(--navy);color:#fff;border-radius:18px;padding:22px 26px;margin-top:20px;font-size:15px">💡 <b style="color:var(--gold-soft)">Why this decides the company:</b> the Planner is acquired years before value; the Survivor needs value before she's heard of us. Bridging that gap is exactly why distribution runs through <b>institutions</b> (next section), not consumer ads.</div>
+  </div>
+</section>
+
+<!-- ===== TWO-TIER TRIGGER ===== -->
+<section class="blk" style="background:var(--cream)">
+  <div class="wrap">
+    <div class="eyebrow">The crux · where it lives or dies</div>
+    <h2 class="h2">The two-tier trigger</h2>
+    <p class="lead">A false positive digitally kills a living person; a false negative lets a SIM recycle to a stranger. So we split every action by reversibility — fast where it's safe, slow where it's final.</p>
+    <div class="grid2">
+      <div class="fcard" style="border-left:5px solid var(--green)">
+        <div class="row" style="margin-bottom:10px"><div class="fi" style="margin:0;background:var(--green);color:#fff">⚡</div><div><h3 style="margin:0">Tier-1 · Protective</h3><span class="tagchip t-green">FAST · REVERSIBLE · LOW-PROOF</span></div></div>
+        <p>On a soft signal (nominee report + hospital/cremation proof) we take only <b>non-destructive, reversible</b> steps within hours:</p>
+        <ul style="font-size:14px;color:var(--muted);margin:10px 0 0 18px">
+          <li>Reinforce the 90-day SIM no-recycle window</li>
+          <li>Pause subscriptions · flag institutions for fraud-watch</li>
+          <li>Freeze outbound activity — nothing deleted, nothing moved</li>
+        </ul>
+        <p style="margin-top:10px;color:var(--navy);font-weight:600">If it's false, everything reverses. This is the "magic moment."</p>
+      </div>
+      <div class="fcard" style="border-left:5px solid var(--red)">
+        <div class="row" style="margin-bottom:10px"><div class="fi" style="margin:0;background:var(--red);color:#fff">🔒</div><div><h3 style="margin:0">Tier-2 · Consequential</h3><span class="tagchip t-red">SLOW · IRREVERSIBLE · 3-FACTOR</span></div></div>
+        <p>Money instructions, permanent deletion & formal claims fire <b>only</b> on the full trigger:</p>
+        <ul style="font-size:14px;color:var(--muted);margin:10px 0 0 18px">
+          <li>DigiLocker death certificate (state source of truth)</li>
+          <li>+ Aadhaar match of the deceased</li>
+          <li>+ Nominee co-authentication</li>
+          <li>+ Waiting period & notification to all nominees</li>
+        </ul>
+        <p style="margin-top:10px;color:var(--navy);font-weight:600">Slow is correct here. Sunlight + delay removes the fraud incentive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRUST ARCHITECTURE ===== -->
+<section class="blk" style="background:var(--navy);color:#fff">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold-soft)">Trust is the product</div>
+    <h2 class="h2" style="color:#fff">The zero-knowledge promise — and how it survives attack</h2>
+    <p class="lead" style="color:#aeb6d2">Ilya's paradox: "if you truly can't read the vault, how does a nominee ever open it after death?" Resolved with threshold cryptography, not a marketing promise.</p>
+    <div class="grid3">
+      <div class="person"><div class="fi" style="background:var(--gold);color:var(--navy)">🙈</div><div class="pn">We can't read your vault</div><div class="pq" style="font-style:normal">The key is split by <b>Shamir secret-sharing</b> (e.g. 3-of-5). No single party — including Virasat — can reconstruct alone. Below threshold the plaintext is mathematically unrecoverable.</div></div>
+      <div class="person"><div class="fi" style="background:var(--gold);color:var(--navy)">🔑</div><div class="pn">We don't warehouse your keys</div><div class="pq" style="font-style:normal">Financial discovery runs through <b>Account Aggregator</b> at the moment of need — we don't store account numbers or credentials. The vault mainly holds the <i>map, instructions & wishes</i>.</div></div>
+      <div class="person"><div class="fi" style="background:var(--gold);color:var(--navy)">⚖️</div><div class="pn">We can't be forced to open it early</div><div class="pq" style="font-style:normal">Reconstruction is <b>gated on the verified Tier-2 trigger</b>. Even under subpoena, even if breached, there is nothing to hand over before death is proven. Lost shares are handled by social recovery.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE BOARD ===== -->
+<section class="blk board" id="board">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold-soft)">How the room decided</div>
+    <h2 class="h2">The Founders' Debate</h2>
+    <p class="lead">Twelve sessions, one idea, one MVP — reached by argument, not consensus. Every "yes" below is conditional; the conditions became the roadmap.</p>
+    <div class="people">
+      <div class="person"><div class="pn">Sam Altman</div><div class="pr">Chair · Strategy</div><div class="pq">"Big Tech won't touch Indian claims bureaucracy. Execution against institutions is the moat — this is a company, not a feature."</div></div>
+      <div class="person"><div class="pn">Ilya Sutskever</div><div class="pr">Chief Scientist</div><div class="pq">"Yes — conditional on the two-tier trigger and provable zero-knowledge. AI assists and detects fraud; it never decides who died."</div></div>
+      <div class="person"><div class="pn">Greg Brockman</div><div class="pr">CTO · Architecture</div><div class="pq">"Zero-knowledge vault + DPI orchestration. Thin slice. If we hold decryptable data, we become the honeypot."</div></div>
+      <div class="person"><div class="pn">Elon Musk</div><div class="pr">First Principles</div><div class="pq">"Identity dying with the person is an engineering accident, not a law. Make death a state change — and never lose the last wish."</div></div>
+      <div class="person"><div class="pn">Dr. Vivek Raghavan</div><div class="pr">India DPI · ex-Aadhaar</div><div class="pq">"We're the missing UI for DPDP §14. DigiLocker + Aadhaar + Account Aggregator already give us a fraud-proof trigger."</div></div>
+      <div class="person"><div class="pn">Dr. Pratyush Kumar</div><div class="pr">Sarvam AI</div><div class="pq">"A grieving widow won't use a fintech dashboard. She needs a voice, in her language, at the worst moment of her life."</div></div>
+      <div class="person"><div class="pn">Albinder Dhindsa</div><div class="pr">Go-to-Market</div><div class="pq">"Yes — conditional on leading with insurer-at-claim distribution, not consumer ads. Lead with love, deliver rescue."</div></div>
+      <div class="person"><div class="pn">Saurabh Kumar</div><div class="pr">Operations</div><div class="pq">"Yes — conditional on real concierge ops from day one. The software is 20%; carrying a grieving family is the product."</div></div>
+    </div>
+    <div style="background:rgba(201,162,75,.14);border:1px solid rgba(201,162,75,.4);border-radius:18px;padding:22px 26px;margin-top:24px;text-align:center;font-size:16px">🗳️ <b style="color:var(--gold-soft)">Unanimous — with conditions.</b> We build <b style="color:#fff">Virasat</b>: the DPI-native trust-and-orchestration layer for death. We lead with <i>love</i> (the wish), deliver <i>rescue</i> (the settlement), and never take title, move money, or decide who died — we verify, protect, and carry the family through.</div>
+  </div>
+</section>
+
+<!-- ===== MODEL + GTM ===== -->
+<section class="blk" id="model">
+  <div class="wrap">
+    <div class="eyebrow">Market fit</div>
+    <h2 class="h2">Distribution is the strategy</h2>
+    <p class="lead">Consumer-direct alone is a ~₹190 cr app, not a moonshot. The high-value, high-urgency Survivor can't be reached by ads — so the institution she's already dealing with <i>is</i> the channel. Distribution is simultaneously revenue, acquisition, and moat.</p>
+    <div class="grid2" style="margin-bottom:34px">
+      <div class="fcard" style="border-left:5px solid var(--gold)"><div class="row" style="margin-bottom:8px"><div class="fi" style="margin:0">🛡️</div><div><h3 style="margin:0">Insurer-at-claim</h3><span class="tagchip t-amber">HIGHEST CONVICTION · PILOT #1</span></div></div><p>At the death-claim moment the family is <i>already</i> discovering assets. The insurer offers "we'll help you settle everything, not just our policy" — better claims NPS for them, the highest-value user for us, paid by them.</p></div>
+      <div class="fcard" style="border-left:5px solid var(--gold)"><div class="row" style="margin-bottom:8px"><div class="fi" style="margin:0">🏦</div><div><h3 style="margin:0">Bank dormant-reunification</h3><span class="tagchip t-amber">PILOT #2</span></div></div><p>"We'll reconnect your deceased/dormant accounts to heirs — cutting your UDGAM exposure and servicing cost." Tests willingness to pay on the money side.</p></div>
+    </div>
+
+    <div class="eyebrow">Revenue tiers</div>
+    <h2 class="h2">How Virasat makes money</h2>
+    <p class="lead">The consumer sub builds the trusted install base. The <b>money</b> is per-settlement concierge fees at the moment of need + institutional licences.</p>
+    <div class="mgrid">
+      <div class="mcard"><h3>Free</h3><div class="price">₹0</div><ul><li>Legacy Vault & nominees</li><li>Last wishes & messages</li><li>Basic Saarthi</li><li>The land-grab & trust layer</li></ul></div>
+      <div class="mcard hi"><h3>Concierge</h3><div class="price">₹5–15k</div><ul><li>Per-settlement, at point of need</li><li>Low price-sensitivity (vs a lawyer)</li><li>Human case-worker end-to-end</li><li>Often funded by the institution</li></ul></div>
+      <div class="mcard"><h3>B2B2C</h3><div class="price">Licence</div><ul><li>Insurers & banks bundle it</li><li>Cuts dormant-deposit liability</li><li>Only viable channel for the Survivor</li><li>The real revenue engine</li></ul></div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:60px">Prove it or kill it</div>
+    <h2 class="h2">The first 90 days</h2>
+    <p class="lead">We validate the three assumptions that can end the company <i>before</i> we over-build the fancy parts.</p>
+    <div class="grid3" style="margin-bottom:22px">
+      <div class="stat" style="text-align:left"><b style="font-size:22px">Kill-Assumption #1</b><span>A regulated institution will <b>pay to distribute</b> this. → Two paid pilots (insurer + bank).</span></div>
+      <div class="stat" style="text-align:left"><b style="font-size:22px">Kill-Assumption #2</b><span>Big Tech <b>won't</b> ship a good-enough India feature. → Own the cross-institution execution they won't touch.</span></div>
+      <div class="stat" style="text-align:left"><b style="font-size:22px">Kill-Assumption #3</b><span>Account Aggregator <b>works post-death</b> (or via pre-death consent). → Regulator read + manual fallback.</span></div>
+    </div>
+    <div style="background:var(--navy);color:#fff;border-radius:18px;padding:22px 26px;font-size:15px">🚦 <b style="color:var(--gold-soft)">Kill gate:</b> if after two serious paid pilots no institution will pay <i>and</i> no family will pay the concierge fee, the thesis is wrong — and we stop, rather than limp along as a consumer app pretending to be a moonshot. <b style="color:var(--gold-soft)">Non-negotiable:</b> zero false-positive irreversible actions. Ever.</div>
+
+    <div class="eyebrow" style="margin-top:60px">Roadmap</div>
+    <h2 class="h2">From MVP to movement</h2>
+    <div class="road">
+      <div class="rstep"><div class="rd"></div><span>90 DAYS</span><b>Kill-test</b><small>2 paid pilots · two-tier trigger · ZK vault · concierge for top-5 institutions</small></div>
+      <div class="rstep"><div class="rd"></div><span>6 MONTHS</span><b>Assisted Claims</b><small>Playbook library · Saarthi 3→more languages · automate the repetitive 80%</small></div>
+      <div class="rstep"><div class="rd"></div><span>12 MONTHS</span><b>Institutional scale</b><small>B2B2C with insurers & banks · UDGAM auto-claim</small></div>
+      <div class="rstep"><div class="rd"></div><span>VISION</span><b>The Death API</b><small>National standard for a dignified handover</small></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="diya"></div>
+  <p><b>VIRASAT</b> · विरासत — Your digital life, honoured after you're gone.</p>
+  <p style="margin-top:8px">A Moonshot Avishkar 2026 prototype · Boardroom: Altman · Sutskever · Brockman · Musk · Raghavan · Kumar · Dhindsa · Kumar</p>
+  <p style="margin-top:8px;font-size:10px">Prototype for ideation only. Built on Aadhaar, DigiLocker, Account Aggregator & DPDP Act 2023 §14.</p>
+</footer>
+
+<script>
+  function go(screen){
+    document.querySelectorAll('.screen .view').forEach(v=>v.classList.toggle('active', v.dataset.screen===screen));
+    document.querySelectorAll('.switch button').forEach(b=>b.classList.toggle('on', b.dataset.go===screen));
+    if(screen==='n_unlock') resetUnlock();
+    if(screen==='n_approve') resetApprove();
+  }
+
+  function setJourney(j){
+    document.querySelectorAll('.jtoggle button').forEach(b=>b.classList.toggle('on', b.dataset.j===j));
+    document.getElementById('switch-planner').style.display = (j==='planner')?'flex':'none';
+    document.getElementById('switch-nominee').style.display = (j==='nominee')?'flex':'none';
+    go(j==='planner' ? 'login' : 'n_detect');
+  }
+
+  /* threshold unlock animation */
+  function resetUnlock(){
+    ['s-nominee','s-enclave','s-escrow'].forEach(id=>{var e=document.getElementById(id); if(e) e.classList.remove('lit');});
+    var p=document.getElementById('unlockedPanel'); if(p) p.style.display='none';
+    var b=document.getElementById('unlockBtn'); if(b){ b.disabled=false; b.style.opacity=1; }
+    var m=document.getElementById('thmeterTxt'); if(m) m.textContent='Tap below — 0 of 3 shares combined';
+  }
+  function runUnlock(){
+    var btn=document.getElementById('unlockBtn'); if(btn){ btn.disabled=true; btn.style.opacity=.5; btn.textContent='📲 Verifying your Aadhaar OTP…'; }
+    var steps=[
+      {id:'s-nominee', msg:'1 of 3 — your Aadhaar verified'},
+      {id:'s-enclave', msg:'2 of 3 — state-verified death confirmed'},
+      {id:'s-escrow',  msg:'3 of 3 — escrow contributed'}
+    ];
+    steps.forEach(function(s,i){
+      setTimeout(function(){
+        var el=document.getElementById(s.id); if(el) el.classList.add('lit');
+        var m=document.getElementById('thmeterTxt'); if(m) m.textContent=s.msg;
+        if(i===steps.length-1){
+          setTimeout(function(){
+            var p=document.getElementById('unlockedPanel'); if(p) p.style.display='block';
+            var mt=document.getElementById('thmeterTxt'); if(mt) mt.textContent='✓ Key reconstructed on your device';
+            if(btn) btn.textContent='🔐 Authenticate with my Aadhaar OTP';
+          },550);
+        }
+      }, 800*(i+1));
+    });
+  }
+
+  /* async dual-control */
+  function resetApprove(){
+    var c=document.getElementById('meeraChip'); if(c){ c.textContent='Waiting…'; c.className='tagchip t-amber'; }
+    var b=document.getElementById('meeraBtn'); if(b){ b.disabled=false; b.style.opacity=1; b.textContent='Approve'; }
+    var box=document.getElementById('approvedBox'); if(box) box.style.display='none';
+  }
+  function meeraApprove(){
+    var b=document.getElementById('meeraBtn'); if(b){ b.disabled=true; b.style.opacity=.5; b.textContent='✓ Approved'; }
+    var c=document.getElementById('meeraChip'); if(c){ c.textContent='✓ Approved'; c.className='tagchip t-green'; }
+    var box=document.getElementById('approvedBox'); if(box) box.style.display='block';
+  }
+
+  document.querySelectorAll('.switch button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+  document.querySelectorAll('.jtoggle button').forEach(b=>b.addEventListener('click',()=>setJourney(b.dataset.j)));
+</script>
+</body>
+</html>
