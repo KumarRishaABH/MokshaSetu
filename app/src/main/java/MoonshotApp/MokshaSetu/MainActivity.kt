@@ -1,16 +1,13 @@
 package MoonshotApp.MokshaSetu
 
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import MoonshotApp.MokshaSetu.data.VoiceCapture
+import MoonshotApp.MokshaSetu.ui.VirasatApp
 import MoonshotApp.MokshaSetu.ui.theme.MokshaSetuTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +16,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MokshaSetuTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                VirasatApp()
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MokshaSetuTheme {
-        Greeting("Android")
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == VoiceCapture.REQUEST_CODE && resultCode == RESULT_OK) {
+            VoiceCapture.pendingText.value = data
+                ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                ?.firstOrNull()
+        }
     }
 }

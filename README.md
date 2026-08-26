@@ -16,11 +16,24 @@ One death in India triggers three silent crises: assets go unclaimed, credential
 | 4 | **Two-Tier Trigger** | Tier-1 protective actions vs. Tier-2 consequential actions with multi-factor proof + waiting period |
 | 5 | **Saarthi AI** | Voice-first, grief-aware guide for the Survivor |
 
-## Try the prototype
+## Clone & open
 
-Open [`docs/prototype.html`](docs/prototype.html) in any browser — a self-contained interactive demo of the full journey (Planner setup → Saarthi outreach over WhatsApp → posthumous claim flow).
+### Prerequisites
 
-## Build the app
+- Android Studio Ladybug+ (or any IntelliJ IDE with the Android plugin)
+- JDK 17+
+- Android SDK 37 installed via SDK Manager
+
+### Steps
+
+```bash
+git clone https://github.com/KumarRishaABH/MokshaSetu.git
+cd MokshaSetu
+```
+
+**Android Studio (recommended):** `File → Open` → select the cloned `MokshaSetu` folder → let Gradle sync → pick a device/emulator → `Run ▶`.
+
+**Command line / any IDE:**
 
 ```bash
 ./gradlew assembleDebug        # compile
@@ -28,7 +41,9 @@ Open [`docs/prototype.html`](docs/prototype.html) in any browser — a self-cont
 ./gradlew lint                 # lint checks
 ```
 
-Requires JDK 17+ and Android SDK 37. Open the project in Android Studio for the best experience.
+An APK lands at `app/build/outputs/apk/debug/app-debug.apk`. Install it on a device or emulator.
+
+**Prototype:** open [`docs/prototype.html`](docs/prototype.html) in any browser — a self-contained interactive demo of the full journey (Planner setup → Saarthi outreach over WhatsApp → posthumous claim flow).
 
 ## Tech
 
