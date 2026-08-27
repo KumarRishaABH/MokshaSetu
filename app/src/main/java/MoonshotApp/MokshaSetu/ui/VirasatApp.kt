@@ -18,134 +18,219 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import MoonshotApp.MokshaSetu.R
 import MoonshotApp.MokshaSetu.data.DemoRepository
-import MoonshotApp.MokshaSetu.ui.screens.ApproveScreen
-import MoonshotApp.MokshaSetu.ui.screens.ClaimScreen
-import MoonshotApp.MokshaSetu.ui.screens.CompartmentScreen
-import MoonshotApp.MokshaSetu.ui.screens.DetectScreen
+import MoonshotApp.MokshaSetu.data.UserRole
+import MoonshotApp.MokshaSetu.ui.screens.AadhaarLoginScreen
+import MoonshotApp.MokshaSetu.ui.screens.AssetsScreen
+import MoonshotApp.MokshaSetu.ui.screens.DigitalVaultScreen
+import MoonshotApp.MokshaSetu.ui.screens.DiscoveryScreen
 import MoonshotApp.MokshaSetu.ui.screens.HomeScreen
-import MoonshotApp.MokshaSetu.ui.screens.LoginScreen
 import MoonshotApp.MokshaSetu.ui.screens.NomineesScreen
-import MoonshotApp.MokshaSetu.ui.screens.OutreachScreen
+import MoonshotApp.MokshaSetu.ui.screens.PropertyUploadScreen
+import MoonshotApp.MokshaSetu.ui.screens.RoleChooserScreen
 import MoonshotApp.MokshaSetu.ui.screens.SafetyNetScreen
-import MoonshotApp.MokshaSetu.ui.screens.SaarthiScreen
-import MoonshotApp.MokshaSetu.ui.screens.TriggersScreen
-import MoonshotApp.MokshaSetu.ui.screens.UnlockScreen
-import MoonshotApp.MokshaSetu.ui.screens.VaultScreen
 import MoonshotApp.MokshaSetu.ui.screens.WishesScreen
+import MoonshotApp.MokshaSetu.ui.screens.nominee.ClaimScreen
+import MoonshotApp.MokshaSetu.ui.screens.nominee.DeathCertificateScreen
+import MoonshotApp.MokshaSetu.ui.screens.nominee.EntitlementsScreen
+import MoonshotApp.MokshaSetu.ui.screens.nominee.RegistryVerifyScreen
 import MoonshotApp.MokshaSetu.ui.theme.LineC
 import MoonshotApp.MokshaSetu.ui.theme.Muted
 import MoonshotApp.MokshaSetu.ui.theme.Navy
 
 sealed class Dest {
-    data object Login : Dest()
-    data object Home : Dest()
-    data object Vault : Dest()
+    data object RoleChooser : Dest()
+    data class AadhaarLogin(val role: UserRole) : Dest()
+    data object Discovery : Dest()
+    data object PlannerHome : Dest()
+    data object Assets : Dest()
+    data object DigitalVault : Dest()
     data object Nominees : Dest()
     data object Wishes : Dest()
-    data object Saarthi : Dest()
+    data object PropertyUpload : Dest()
+    data object DeathCertificate : Dest()
+    data object RegistryVerify : Dest()
+    data object Entitlements : Dest()
     data object Claim : Dest()
-    data object Triggers : Dest()
-    data object Detect : Dest()
-    data object Outreach : Dest()
-    data object Unlock : Dest()
-    data object Compartment : Dest()
-    data object Approve : Dest()
     data object SafetyNet : Dest()
 
-    val isTabbed: Boolean
-        get() = this in TAB_DESTS
+    val isTabbed: Boolean get() = this in TAB_DESTS
 
     companion object {
-        val TAB_DESTS = listOf(Home, Vault, Wishes, Saarthi, Claim)
+        val TAB_DESTS = listOf(PlannerHome, Assets, DigitalVault, Nominees, Wishes)
     }
 }
 
 @Composable
 fun VirasatApp() {
-    val backStack = remember { mutableStateListOf<Dest>(Dest.Login) }
+    val backStack = remember { mutableStateListOf<Dest>(Dest.RoleChooser) }
     val current = backStack.last()
 
     fun push(dest: Dest) = backStack.add(dest)
+
     fun pop() {
         if (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
     }
 
+    fun selectTab(dest: Dest) {
+        backStack.clear()
+        backStack.add(Dest.RoleChooser)
+        backStack.add(Dest.PlannerHome)
+        if (dest != Dest.PlannerHome) backStack.add(dest)
+    }
+
+    fun switchRole() {
+        DemoRepository.resetDemo()
+        backStack.clear()
+        backStack.add(Dest.RoleChooser)
+    }
+
     BackHandler(enabled = backStack.size > 1) { pop() }
+
+    val switchLabel = stringResource(R.string.action_switch_role)
+    val plannerFirstName = DemoRepository.plannerProfile?.name?.substringBefore(' ').orEmpty()
 
     Scaffold(
         topBar = {
             when (current) {
-                Dest.Vault -> VirasatTopBar(stringResource(R.string.vault_title), stringResource(R.string.vault_subtitle), showBack = true, onBack = ::pop)
-                Dest.Nominees -> VirasatTopBar(stringResource(R.string.nominees_title), stringResource(R.string.nominees_subtitle), showBack = true, onBack = ::pop)
-                Dest.Wishes -> VirasatTopBar(stringResource(R.string.wishes_title), stringResource(R.string.wishes_subtitle), showBack = true, onBack = ::pop)
-                Dest.Saarthi -> VirasatTopBar(stringResource(R.string.saarthi_title), stringResource(R.string.saarthi_subtitle), showBack = true, onBack = ::pop)
-                Dest.Triggers -> VirasatTopBar(stringResource(R.string.triggers_title), stringResource(R.string.triggers_subtitle), showBack = true, onBack = ::pop)
-                Dest.Detect -> VirasatTopBar(stringResource(R.string.detect_title), stringResource(R.string.detect_subtitle), showBack = true, onBack = ::pop)
-                Dest.Unlock -> VirasatTopBar(stringResource(R.string.unlock_title), stringResource(R.string.unlock_subtitle), showBack = true, onBack = ::pop)
-                Dest.Compartment -> VirasatTopBar(stringResource(R.string.compartment_title), stringResource(R.string.compartment_subtitle), showBack = false)
-                Dest.Approve -> VirasatTopBar(stringResource(R.string.approve_title), stringResource(R.string.approve_subtitle), showBack = true, onBack = ::pop)
-                Dest.SafetyNet -> VirasatTopBar(stringResource(R.string.safety_title), stringResource(R.string.safety_subtitle), showBack = true, onBack = ::pop)
+                Dest.Discovery -> VirasatTopBar(
+                    stringResource(R.string.discovery_title),
+                    stringResource(R.string.discovery_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.PlannerHome -> VirasatTopBar(
+                    stringResource(R.string.home_title_fmt, plannerFirstName),
+                    stringResource(R.string.home_subtitle),
+                    showBack = false,
+                    actionLabel = switchLabel,
+                    onAction = ::switchRole
+                )
+                Dest.Assets -> VirasatTopBar(
+                    stringResource(R.string.assets_title),
+                    stringResource(R.string.assets_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.DigitalVault -> VirasatTopBar(
+                    stringResource(R.string.digital_title),
+                    stringResource(R.string.digital_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.Nominees -> VirasatTopBar(
+                    stringResource(R.string.nominees_title),
+                    stringResource(R.string.nominees_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.Wishes -> VirasatTopBar(
+                    stringResource(R.string.wishes_title),
+                    stringResource(R.string.wishes_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.PropertyUpload -> VirasatTopBar(
+                    stringResource(R.string.property_title),
+                    stringResource(R.string.property_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.DeathCertificate -> VirasatTopBar(
+                    stringResource(R.string.cert_title),
+                    stringResource(R.string.cert_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.RegistryVerify -> VirasatTopBar(
+                    stringResource(R.string.registry_title),
+                    stringResource(R.string.registry_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.Entitlements -> VirasatTopBar(
+                    stringResource(R.string.entitlements_title),
+                    stringResource(R.string.entitlements_subtitle),
+                    showBack = true,
+                    onBack = ::pop,
+                    actionLabel = switchLabel,
+                    onAction = ::switchRole
+                )
+                Dest.Claim -> VirasatTopBar(
+                    stringResource(R.string.claim_title),
+                    stringResource(R.string.claim_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
+                Dest.SafetyNet -> VirasatTopBar(
+                    stringResource(R.string.safety_title),
+                    stringResource(R.string.safety_subtitle),
+                    showBack = true,
+                    onBack = ::pop
+                )
                 else -> {}
             }
         },
         bottomBar = {
             if (current.isTabbed) {
-                TabBar(current) { dest ->
-                    while (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
-                    backStack.add(dest)
-                }
+                TabBar(current, ::selectTab)
             }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Box(Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
-            when (current) {
-                Dest.Login -> LoginScreen(onEnterPlanner = { push(Dest.Home) })
-                Dest.Home -> HomeScreen(
-                    onOpenVault = { push(Dest.Vault) },
-                    onOpenNominees = { push(Dest.Nominees) },
-                    onOpenWishes = { push(Dest.Wishes) },
-                    onOpenSaarthi = { push(Dest.Saarthi) },
-                    onOpenTriggers = { push(Dest.Triggers) },
-                    onPreviewNomineeJourney = { push(Dest.Detect) }
+            when (val dest = current) {
+                Dest.RoleChooser -> RoleChooserScreen(onChoose = { role ->
+                    DemoRepository.enterRole(role)
+                    push(Dest.AadhaarLogin(role))
+                })
+                is Dest.AadhaarLogin -> AadhaarLoginScreen(
+                    role = dest.role,
+                    onBack = ::pop,
+                    onAuthenticated = {
+                        if (dest.role == UserRole.PLANNER) push(Dest.Discovery) else push(Dest.DeathCertificate)
+                    }
                 )
-                Dest.Vault -> VaultScreen()
+                Dest.Discovery -> DiscoveryScreen(onContinue = { selectTab(Dest.PlannerHome) })
+                Dest.PlannerHome -> HomeScreen(
+                    onOpenAssets = { selectTab(Dest.Assets) },
+                    onOpenDigital = { selectTab(Dest.DigitalVault) },
+                    onOpenNominees = { selectTab(Dest.Nominees) },
+                    onOpenWishes = { selectTab(Dest.Wishes) },
+                    onOpenProperty = { push(Dest.PropertyUpload) }
+                )
+                Dest.Assets -> AssetsScreen(onAddProperty = { push(Dest.PropertyUpload) })
+                Dest.DigitalVault -> DigitalVaultScreen()
                 Dest.Nominees -> NomineesScreen()
                 Dest.Wishes -> WishesScreen()
-                Dest.Saarthi -> SaarthiScreen()
+                Dest.PropertyUpload -> PropertyUploadScreen(onSaved = ::pop)
+                Dest.DeathCertificate -> DeathCertificateScreen(onSubmit = { push(Dest.RegistryVerify) })
+                Dest.RegistryVerify -> RegistryVerifyScreen(
+                    onVerified = { push(Dest.Entitlements) },
+                    onRetry = ::pop
+                )
+                Dest.Entitlements -> EntitlementsScreen(onClaim = { push(Dest.Claim) })
                 Dest.Claim -> ClaimScreen(onOpenSafetyNet = { push(Dest.SafetyNet) })
-                Dest.Triggers -> TriggersScreen()
-                Dest.Detect -> DetectScreen(onBegin = { push(Dest.Outreach) })
-                Dest.Outreach -> OutreachScreen(onOpenVaultOfFather = { push(Dest.Unlock) })
-                Dest.Unlock -> UnlockScreen(onUnlocked = { push(Dest.Compartment) })
-                Dest.Compartment -> CompartmentScreen(popBack = ::pop, onBeginSettlement = { push(Dest.Approve) })
-                Dest.Approve -> ApproveScreen(onSeeSettlement = { push(Dest.Claim) })
-                Dest.SafetyNet -> SafetyNetScreen(onRestart = {
-                    DemoRepository.nomineeUnlocked.value = false
-                    while (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
-                    backStack.add(Dest.Login)
-                })
+                Dest.SafetyNet -> SafetyNetScreen(onRestart = ::switchRole)
             }
         }
     }
 }
 
-private val TAB_ITEMS = listOf(
-    TabSpec(R.string.tab_home, "🏠", Dest.Home),
-    TabSpec(R.string.tab_vault, "🗄️", Dest.Vault),
-    TabSpec(R.string.tab_wishes, "💌", Dest.Wishes),
-    TabSpec(R.string.tab_saarthi, "🪔", Dest.Saarthi),
-    TabSpec(R.string.tab_claim, "🕊️", Dest.Claim)
-)
-
 private data class TabSpec(val labelRes: Int, val emoji: String, val dest: Dest)
+
+private val TAB_ITEMS = listOf(
+    TabSpec(R.string.tab_home, "🏠", Dest.PlannerHome),
+    TabSpec(R.string.tab_assets, "🏦", Dest.Assets),
+    TabSpec(R.string.tab_digital, "🔐", Dest.DigitalVault),
+    TabSpec(R.string.tab_nominees, "👥", Dest.Nominees),
+    TabSpec(R.string.tab_wishes, "💌", Dest.Wishes)
+)
 
 @Composable
 private fun TabBar(current: Dest, onSelect: (Dest) -> Unit) {
