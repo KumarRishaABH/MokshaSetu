@@ -1,29 +1,75 @@
 package MoonshotApp.MokshaSetu.data
 
-data class AssetEntry(
-    val id: Int,
-    val emoji: String,
-    val title: String,
-    val noteRes: NoteKey,
-    val status: Status,
-    val category: Category,
-    val nominee: String? = null,
-    val nomineeRelation: String? = null
+enum class UserRole { PLANNER, NOMINEE }
+
+enum class AssetKind { BANK, DEMAT, INSURANCE, PROPERTY }
+
+enum class DigitalAction { MEMORIALISE, DELETE, TRANSFER_ACCESS }
+
+enum class RegistryState { IDLE, CHECKING, VERIFIED, MISMATCH }
+
+enum class ClaimState { NOT_STARTED, PACKET_SENT, INSTITUTION_PROCESSING, CREDITED }
+
+data class AadhaarProfile(
+    val maskedAadhaar: String,
+    val name: String,
+    val dob: String,
+    val address: String
 )
 
-enum class Category { FINANCIAL, DIGITAL }
-enum class Status { READY, TODO, ACTION }
-enum class NoteKey { SEALED, PENDING, BLOCK_RECYCLE, MEMORIALISE, AUTO_CANCEL }
+data class FinancialAsset(
+    val id: Int,
+    val kind: AssetKind,
+    val institution: String,
+    val maskedId: String,
+    val valueRupees: Long,
+    val nomineeId: Int?,
+    val sharePercent: Int = 100,
+    val discoveredVia: String
+) {
+    val nomineeShareRupees: Long get() = valueRupees * sharePercent / 100
+}
+
+data class DigitalIdentity(
+    val id: Int,
+    val platform: String,
+    val emoji: String,
+    val username: String,
+    val password: String,
+    val nomineeId: Int?,
+    val afterDeathAction: DigitalAction
+)
 
 data class Nominee(
     val id: Int,
     val name: String,
     val relation: String,
-    val scope: String,
+    val maskedAadhaar: String,
     val verified: Boolean
+) {
+    val initial: String get() = name.trim().take(1).uppercase().ifBlank { "?" }
+}
+
+data class PropertyDoc(
+    val id: Int,
+    val title: String,
+    val fileName: String,
+    val nomineeId: Int?
 )
 
-enum class WishKind { MESSAGE, UNFULFILLED, ACTION, SCHEDULED }
+data class DeathCertificate(
+    val registrationNo: String,
+    val state: String,
+    val issuedOn: String,
+    val deceasedName: String,
+    val fileName: String?
+)
+
+data class Claim(
+    val assetId: Int,
+    val state: ClaimState,
+    val referenceNo: String?
+)
 
 data class Wish(
     val id: Int,
@@ -35,32 +81,7 @@ data class Wish(
 
 enum class MetaKey { ROHAN, TEMPLE, INSTA, VIDEO }
 
-data class Tier1Action(val id: Int, val labelRes: Int, val armed: Boolean)
-
-data class Tier2Action(
-    val id: Int,
-    val titleRes: Int,
-    val certVerified: Boolean = true,
-    val aadhaarVerified: Boolean = true,
-    val coAuthDone: Boolean = false,
-    val waitingDays: Int = 0,
-    val armed: Boolean = false
-)
-
-data class ChatMessage(
-    val id: Int,
-    val textRes: Int?,
-    val text: String?,
-    val fromAi: Boolean
-)
-
-enum class ClaimDotState { DONE, NOW, TODO }
-
-data class ClaimStep(
-    val dotState: ClaimDotState,
-    val stepNo: Int?,
-    val titleRes: Int,
-    val chipRes: Int?,
-    val detailTitleRes: Int,
-    val detailBodyRes: Int
-)
+fun maskAadhaar(digits: String): String {
+    val clean = digits.filter { it.isDigit() }
+    return if (clean.length < 4) "XXXX XXXX XXXX" else "XXXX XXXX ${clean.takeLast(4)}"
+}
