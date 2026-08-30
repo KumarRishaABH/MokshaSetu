@@ -77,7 +77,7 @@ fun ClaimScreen(onOpenSafetyNet: () -> Unit) {
     val notStarted = assets.filter { DemoRepository.claimFor(it.id).state == ClaimState.NOT_STARTED }
     val credited = assets.filter { DemoRepository.claimFor(it.id).state == ClaimState.CREDITED }
     val allCredited = assets.isNotEmpty() && credited.size == assets.size
-    val creditedTotal = credited.sumOf { it.nomineeShareRupees }
+    val creditedTotal = nominee?.let { n -> credited.sumOf { it.shareRupeesFor(n.id) } } ?: 0L
     val inFlight = claims.any {
         it.state == ClaimState.PACKET_SENT || it.state == ClaimState.INSTITUTION_PROCESSING
     }
@@ -104,6 +104,7 @@ fun ClaimScreen(onOpenSafetyNet: () -> Unit) {
             val asset = assets[index]
             ClaimCard(
                 asset = asset,
+                shareRupees = nominee?.let { asset.shareRupeesFor(it.id) } ?: 0L,
                 enabled = !inFlight,
                 onClaim = { confirming = listOf(asset) }
             )
@@ -158,6 +159,7 @@ fun ClaimScreen(onOpenSafetyNet: () -> Unit) {
         ) {
             ConfirmSheet(
                 assets = batch,
+                nomineeId = nominee.id,
                 onCancel = { confirming = emptyList() },
                 onConfirm = {
                     confirming = emptyList()
@@ -180,11 +182,12 @@ private suspend fun runClaims(assets: List<FinancialAsset>, nominee: Nominee) {
 @Composable
 private fun ConfirmSheet(
     assets: List<FinancialAsset>,
+    nomineeId: Int,
     onCancel: () -> Unit,
     onConfirm: () -> Unit
 ) {
     val institutions = assets.map { it.institution }.distinct().joinToString(", ")
-    val total = assets.sumOf { it.nomineeShareRupees }
+    val total = assets.sumOf { it.shareRupeesFor(nomineeId) }
 
     Column(
         Modifier.padding(horizontal = 20.dp).padding(bottom = 26.dp),
@@ -212,7 +215,7 @@ private fun ConfirmSheet(
                             modifier = Modifier.weight(1f)
                         )
                         Text(
-                            formatRupees(asset.nomineeShareRupees),
+                            formatRupees(asset.shareRupeesFor(nomineeId)),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = Navy
@@ -250,7 +253,7 @@ private fun ConfirmSheet(
 }
 
 @Composable
-private fun ClaimCard(asset: FinancialAsset, enabled: Boolean, onClaim: () -> Unit) {
+private fun ClaimCard(asset: FinancialAsset, shareRupees: Long, enabled: Boolean, onClaim: () -> Unit) {
     val claim = DemoRepository.claimFor(asset.id)
 
     Surface(
@@ -273,7 +276,7 @@ private fun ClaimCard(asset: FinancialAsset, enabled: Boolean, onClaim: () -> Un
                     Text(asset.maskedId, style = MaterialTheme.typography.bodySmall, color = Muted)
                 }
                 Text(
-                    formatRupees(asset.nomineeShareRupees),
+                    formatRupees(shareRupees),
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
@@ -293,7 +296,7 @@ private fun ClaimCard(asset: FinancialAsset, enabled: Boolean, onClaim: () -> Un
                 ClaimState.INSTITUTION_PROCESSING -> ProgressRow(
                     stringResource(R.string.claim_state_processing_fmt, asset.institution)
                 )
-                ClaimState.CREDITED -> CreditedPanel(asset, claim.referenceNo)
+                ClaimState.CREDITED -> CreditedPanel(asset, shareRupees, claim.referenceNo)
             }
         }
     }
@@ -312,7 +315,7 @@ private fun ProgressRow(text: String) {
 }
 
 @Composable
-private fun CreditedPanel(asset: FinancialAsset, referenceNo: String?) {
+private fun CreditedPanel(asset: FinancialAsset, shareRupees: Long, referenceNo: String?) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
@@ -326,7 +329,7 @@ private fun CreditedPanel(asset: FinancialAsset, referenceNo: String?) {
                     stringResource(
                         R.string.claim_state_credited_fmt,
                         asset.institution,
-                        formatRupees(asset.nomineeShareRupees)
+                        formatRupees(shareRupees)
                     ),
                     fontSize = 11.5.sp,
                     lineHeight = 17.sp,

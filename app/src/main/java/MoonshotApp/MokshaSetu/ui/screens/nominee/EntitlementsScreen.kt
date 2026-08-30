@@ -121,7 +121,7 @@ fun EntitlementsScreen(onClaim: () -> Unit) {
             }
         }
         items(entitlements.assets.size, key = { "ent-asset-${entitlements.assets[it].id}" }) { index ->
-            MonetaryCard(entitlements.assets[index])
+            MonetaryCard(entitlements.assets[index], nominee.id)
         }
 
         if (entitlements.propertyDocs.isNotEmpty()) {
@@ -160,23 +160,24 @@ fun EntitlementsScreen(onClaim: () -> Unit) {
 }
 
 @Composable
-private fun MonetaryCard(asset: FinancialAsset) {
+private fun MonetaryCard(asset: FinancialAsset, nomineeId: Int) {
+    val split = asset.splitFor(nomineeId)
     MoneyCard(
         emoji = emojiFor(asset.kind),
         institution = asset.institution,
         maskedId = asset.maskedId,
-        amount = formatRupees(asset.nomineeShareRupees),
-        footer = if (asset.sharePercent < 100) {
+        amount = formatRupees(asset.shareRupeesFor(nomineeId)),
+        footer = if (split != null && split.percent < 100) {
             stringResource(
                 R.string.entitlements_share_note_fmt,
-                asset.sharePercent,
+                split.percent,
                 formatRupees(asset.valueRupees)
             )
         } else {
             stringResource(R.string.entitlements_full_share)
         },
-        chip = if (asset.sharePercent < 100) {
-            stringResource(R.string.assets_share_fmt, asset.sharePercent) to ChipKind.AMBER
+        chip = if (split != null && split.percent < 100) {
+            stringResource(R.string.assets_share_fmt, split.percent) to ChipKind.AMBER
         } else {
             null
         }

@@ -10,3 +10,11 @@
 .cxx
 local.properties
 *.hprof
+# opencode - local provider config (contains API keys / env-specific models)
+opencode.json
+opencode.jsonc
+.opencode/
+# Python registry server (offline fallback)
+__pycache__/
+.venv/
+server/.env

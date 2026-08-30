@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "in.mokshasetu.virasat"
+        applicationId = "MoonshotApp.MokshaSetu"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.okhttp)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -51,4 +52,28 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+val adbPath: String by lazy {
+    val sdkDir = project.rootProject.file("local.properties")
+        .takeIf { it.exists() }
+        ?.readLines()
+        ?.firstOrNull { it.startsWith("sdk.dir=") }
+        ?.substringAfter("sdk.dir=")
+        ?: "${System.getProperty("user.home")}/Library/Android/sdk"
+    "$sdkDir/platform-tools/adb"
+}
+
+tasks.register<Exec>("launchDebug") {
+    group = "install"
+    description = "Install debug APK and launch on a connected device"
+    dependsOn("installDebug")
+    commandLine(
+        adbPath,
+        "shell",
+        "am",
+        "start",
+        "-n",
+        "MoonshotApp.MokshaSetu/MoonshotApp.MokshaSetu.MainActivity",
+    )
 }

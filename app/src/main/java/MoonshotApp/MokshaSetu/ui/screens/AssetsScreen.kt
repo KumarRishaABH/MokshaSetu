@@ -23,7 +23,6 @@ import MoonshotApp.MokshaSetu.data.DemoRepository
 import MoonshotApp.MokshaSetu.data.FinancialAsset
 import MoonshotApp.MokshaSetu.data.formatRupees
 import MoonshotApp.MokshaSetu.ui.BannerCard
-import MoonshotApp.MokshaSetu.ui.ChipKind
 import MoonshotApp.MokshaSetu.ui.DashedActionCard
 import MoonshotApp.MokshaSetu.ui.EmptyStateCard
 import MoonshotApp.MokshaSetu.ui.MoneyCard
@@ -80,12 +79,12 @@ fun AssetsScreen(onAddProperty: () -> Unit) {
     }
 
     picking?.let { asset ->
-        NomineePickerDialog(
+        ShareSplitDialog(
             title = stringResource(R.string.picker_title_asset_fmt, asset.institution),
-            selected = asset.nomineeId,
+            asset = asset,
             onDismiss = { picking = null },
-            onPick = { nomineeId ->
-                DemoRepository.assignAssetNominee(asset.id, nomineeId)
+            onSave = { splits ->
+                DemoRepository.assignAssetSplits(asset.id, splits)
                 picking = null
             }
         )
@@ -94,7 +93,9 @@ fun AssetsScreen(onAddProperty: () -> Unit) {
 
 @Composable
 private fun AssetCard(asset: FinancialAsset, onAssign: () -> Unit) {
-    val nominee = DemoRepository.nomineeById(asset.nomineeId)
+    val splits = asset.splits.mapNotNull { split ->
+        DemoRepository.nomineeById(split.nomineeId)?.let { split to it }
+    }
     val doc = DemoRepository.propertyDocFor(asset.id)
 
     MoneyCard(
@@ -103,15 +104,11 @@ private fun AssetCard(asset: FinancialAsset, onAssign: () -> Unit) {
         maskedId = asset.maskedId,
         amount = formatRupees(asset.valueRupees),
         footer = "",
-        chip = if (asset.sharePercent < 100) {
-            stringResource(R.string.assets_share_fmt, asset.sharePercent) to ChipKind.AMBER
-        } else {
-            null
-        },
-        accentBar = if (nominee == null) RedAlert else null,
+        chip = null,
+        accentBar = if (splits.isEmpty()) RedAlert else null,
         onClick = onAssign,
         trailing = {
-            if (nominee == null) {
+            if (splits.isEmpty()) {
                 Text(
                     stringResource(R.string.asset_no_nominee_tap),
                     fontSize = 11.sp,
@@ -119,12 +116,21 @@ private fun AssetCard(asset: FinancialAsset, onAssign: () -> Unit) {
                     color = RedAlert
                 )
             } else {
-                Text(
-                    stringResource(R.string.asset_nominee_fmt, nominee.name, nominee.relation),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Muted
-                )
+                splits.forEach { (split, nominee) ->
+                    Text(
+                        stringResource(R.string.asset_split_line_fmt, nominee.name, split.percent),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Muted
+                    )
+                }
+                if (asset.unregisteredPercent > 0) {
+                    Text(
+                        stringResource(R.string.asset_unregistered_fmt, asset.unregisteredPercent),
+                        fontSize = 10.sp,
+                        color = RedAlert
+                    )
+                }
             }
             if (doc != null) {
                 Text(

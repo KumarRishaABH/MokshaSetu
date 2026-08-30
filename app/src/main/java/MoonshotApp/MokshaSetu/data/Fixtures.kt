@@ -54,7 +54,7 @@ object Fixtures {
             institution = "HDFC Bank",
             maskedId = "Savings ••4021",
             valueRupees = 482_650,
-            nomineeId = 1,
+            splits = listOf(NomineeSplit(1, 100)),
             discoveredVia = VIA_ACCOUNT_AGGREGATOR
         ),
         FinancialAsset(
@@ -63,7 +63,6 @@ object Fixtures {
             institution = "State Bank of India",
             maskedId = "Savings ••7788",
             valueRupees = 214_300,
-            nomineeId = null,
             discoveredVia = VIA_ACCOUNT_AGGREGATOR
         ),
         FinancialAsset(
@@ -72,7 +71,6 @@ object Fixtures {
             institution = "Punjab National Bank",
             maskedId = "Dormant ••1902",
             valueRupees = 420_000,
-            nomineeId = null,
             discoveredVia = VIA_UDGAM
         ),
         FinancialAsset(
@@ -81,7 +79,7 @@ object Fixtures {
             institution = "Zerodha",
             maskedId = "Demat ••ZR41",
             valueRupees = 635_400,
-            nomineeId = 3,
+            splits = listOf(NomineeSplit(3, 100)),
             discoveredVia = VIA_ACCOUNT_AGGREGATOR
         ),
         FinancialAsset(
@@ -90,7 +88,7 @@ object Fixtures {
             institution = "LIC of India",
             maskedId = "Policy ••309",
             valueRupees = 1_800_000,
-            nomineeId = 2,
+            splits = listOf(NomineeSplit(2, 100)),
             discoveredVia = VIA_ACCOUNT_AGGREGATOR
         ),
         FinancialAsset(
@@ -99,8 +97,7 @@ object Fixtures {
             institution = "HDFC Life Sanchay",
             maskedId = "Policy ••7712",
             valueRupees = 950_000,
-            nomineeId = 1,
-            sharePercent = 50,
+            splits = listOf(NomineeSplit(1, 50)),
             discoveredVia = VIA_ACCOUNT_AGGREGATOR
         )
     )
@@ -111,7 +108,7 @@ object Fixtures {
         institution = "Flat 402, Nirvana Towers, Pune",
         maskedId = "Sale deed MH/PUN/2016/44120",
         valueRupees = 8_500_000,
-        nomineeId = 1,
+        splits = listOf(NomineeSplit(1, 100)),
         discoveredVia = VIA_SELF
     )
 
@@ -122,14 +119,14 @@ object Fixtures {
             id = PROPERTY_ASSET_ID,
             title = "Flat 402, Nirvana Towers, Pune",
             fileName = "sale-deed-flat-402.pdf",
-            nomineeId = 1
+            splits = listOf(NomineeSplit(1, 100))
         )
     )
 
     fun nominees(): List<Nominee> = listOf(
-        Nominee(1, "Rohan Sharma", "Spouse", maskAadhaar(NOMINEE_AADHAAR), verified = true),
-        Nominee(2, "Meera Sharma", "Mother", maskAadhaar("562291445521"), verified = true),
-        Nominee(3, "Aarav Sharma", "Son", maskAadhaar("330871268814"), verified = false)
+        Nominee(1, "Rohan Sharma", "Spouse", maskAadhaar(NOMINEE_AADHAAR), verified = true, demoAadhaar = NOMINEE_AADHAAR),
+        Nominee(2, "Meera Sharma", "Mother", maskAadhaar("562291445521"), verified = true, demoAadhaar = "562291445521"),
+        Nominee(3, "Aarav Sharma", "Son", maskAadhaar("330871268814"), verified = false, demoAadhaar = "330871268814")
     )
 
     fun digitalIdentities(): List<DigitalIdentity> = listOf(
@@ -168,18 +165,4 @@ object Fixtures {
         Wish(3, R.string.wish_insta_text, null, MetaKey.INSTA, null),
         Wish(4, R.string.wish_video_text, null, MetaKey.VIDEO, null)
     )
-
-    fun profileFor(aadhaar: String): AadhaarProfile {
-        val digits = aadhaar.filter { it.isDigit() }
-        return when (digits) {
-            PLANNER_AADHAAR -> plannerProfile
-            NOMINEE_AADHAAR -> nomineeProfile
-            else -> AadhaarProfile(
-                maskedAadhaar = maskAadhaar(digits),
-                name = "Demo Resident",
-                dob = "01 Jan 1990",
-                address = "Demo address, India"
-            )
-        }
-    }
 }

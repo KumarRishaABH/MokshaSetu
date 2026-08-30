@@ -1,0 +1,8 @@
+services:
+  registry:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      MONGODB_URI: ${MONGODB_URI:?Set MONGODB_URI in server/.env or your shell - see README}
+    restart: unless-stopped

@@ -5,6 +5,8 @@ import MoonshotApp.MokshaSetu.data.DeathCertificate
 import MoonshotApp.MokshaSetu.data.FinancialAsset
 import MoonshotApp.MokshaSetu.data.Fixtures
 import MoonshotApp.MokshaSetu.data.RegistryState
+import MoonshotApp.MokshaSetu.data.remote.AadhaarRecord
+import MoonshotApp.MokshaSetu.data.remote.FakeAadhaarRegistry
 import MoonshotApp.MokshaSetu.data.services.MockAadhaarAuthService
 import MoonshotApp.MokshaSetu.data.services.MockAccountDiscoveryService
 import MoonshotApp.MokshaSetu.data.services.MockDeathRegistryService
@@ -36,28 +38,45 @@ class MockServicesTest {
 
         service.discover(Fixtures.plannerProfile) { found.add(it) }
 
-        assertTrue(found.count { it.nomineeId == null } >= 2)
+        assertTrue(found.count { !it.isAssigned } >= 2)
     }
 
+    private fun seededRegistry() = FakeAadhaarRegistry(
+        listOf(
+            AadhaarRecord(Fixtures.PLANNER_AADHAAR, "Anjali Sharma", "14 Aug 1984", "Kothrud, Pune, Maharashtra 411038", "4021", active = true),
+            AadhaarRecord(Fixtures.NOMINEE_AADHAAR, "Rohan Sharma", "02 Nov 1991", "Kothrud, Pune, Maharashtra 411038", "3366", active = true),
+            AadhaarRecord("999900001111", "Old Record", "01 Jan 1950", "Untraceable, India", "1111", active = false)
+        )
+    )
+
     @Test
-    fun aadhaarAuthAcceptsTwelveDigitsAndTheDemoOtp() = runBlocking {
-        val service = MockAadhaarAuthService(latencyMs = 0)
+    fun aadhaarAuthAcceptsARegisteredNumberAndTheDemoOtp() = runBlocking {
+        val service = MockAadhaarAuthService(seededRegistry(), latencyMs = 0)
 
         val txnId = service.sendOtp(Fixtures.PLANNER_AADHAAR)
         assertNotNull(txnId)
 
         val profile = service.verifyOtp(txnId!!, Fixtures.DEMO_OTP)
-        assertEquals(Fixtures.plannerProfile.name, profile?.name)
+        assertEquals("Anjali Sharma", profile?.name)
+        assertEquals("XXXX XXXX 7890", profile?.maskedAadhaar)
     }
 
     @Test
     fun aadhaarAuthRejectsShortNumbersAndWrongOtp() = runBlocking {
-        val service = MockAadhaarAuthService(latencyMs = 0)
+        val service = MockAadhaarAuthService(seededRegistry(), latencyMs = 0)
 
         assertNull(service.sendOtp("9012"))
 
         val txnId = service.sendOtp(Fixtures.NOMINEE_AADHAAR)
         assertNull(service.verifyOtp(txnId!!, "000000"))
+    }
+
+    @Test
+    fun aadhaarAuthRejectsNumbersOutsideTheRegistry() = runBlocking {
+        val service = MockAadhaarAuthService(seededRegistry(), latencyMs = 0)
+
+        assertNull(service.sendOtp("111111111111"))
+        assertNull(service.sendOtp("999900001111"))
     }
 
     @Test

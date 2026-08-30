@@ -45,6 +45,7 @@ import MoonshotApp.MokshaSetu.data.formatRupees
 import MoonshotApp.MokshaSetu.ui.BannerCard
 import MoonshotApp.MokshaSetu.ui.ChipKind
 import MoonshotApp.MokshaSetu.ui.DashedActionCard
+import MoonshotApp.MokshaSetu.ui.EmptyStateCard
 import MoonshotApp.MokshaSetu.ui.SectionTitle
 import MoonshotApp.MokshaSetu.ui.StatusChip
 import MoonshotApp.MokshaSetu.ui.VirasatTextField
@@ -73,6 +74,14 @@ fun NomineesScreen() {
     ) {
         item { Spacer(Modifier.height(6.dp)) }
         item { SectionTitle(stringResource(R.string.nominees_section_people)) }
+        if (DemoRepository.nominees.isEmpty()) {
+            item {
+                EmptyStateCard(
+                    title = stringResource(R.string.nominees_empty_title),
+                    body = stringResource(R.string.nominees_empty_body)
+                )
+            }
+        }
         items(DemoRepository.nominees, key = { it.id }) { nominee -> NomineeCard(nominee) }
         item {
             DashedActionCard(
@@ -130,7 +139,7 @@ private fun NomineeCard(nominee: Nominee) {
     var expanded by remember { mutableStateOf(false) }
     val assets = DemoRepository.assetsOf(nominee.id)
     val identities = DemoRepository.digitalIdentitiesOf(nominee.id)
-    val total = assets.sumOf { it.nomineeShareRupees }
+    val total = assets.sumOf { it.shareRupeesFor(nominee.id) }
 
     Surface(
         shape = RoundedCornerShape(16.dp),
@@ -218,19 +227,20 @@ private fun NomineeCard(nominee: Nominee) {
                         )
                     }
                     assets.forEach { asset ->
+                        val split = asset.splitFor(nominee.id)
                         DetailRow(
                             emoji = emojiFor(asset.kind),
                             title = asset.institution,
-                            subtitle = if (asset.sharePercent < 100) {
+                            subtitle = if (split != null && split.percent < 100) {
                                 stringResource(
                                     R.string.nominees_row_share_fmt,
                                     asset.maskedId,
-                                    asset.sharePercent
+                                    split.percent
                                 )
                             } else {
                                 asset.maskedId
                             },
-                            trailing = formatRupees(asset.nomineeShareRupees)
+                            trailing = formatRupees(asset.shareRupeesFor(nominee.id))
                         )
                     }
                     identities.forEach { identity ->
@@ -271,7 +281,7 @@ private fun DetailRow(emoji: String, title: String, subtitle: String, trailing: 
 private fun AddNomineeDialog(onDismiss: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var relation by remember { mutableStateOf("") }
-    var aadhaar by remember { mutableStateOf("") }
+    var aadhaar by remember { mutableStateOf(DemoRepository.suggestNomineeAadhaar()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -298,12 +308,15 @@ private fun AddNomineeDialog(onDismiss: () -> Unit) {
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                if (name.isNotBlank() && relation.isNotBlank()) {
-                    DemoRepository.addNominee(name.trim(), relation.trim(), aadhaar)
-                }
-                onDismiss()
-            }) { Text(stringResource(R.string.nominees_add_save)) }
+            TextButton(
+                onClick = {
+                    if (name.isNotBlank() && relation.isNotBlank()) {
+                        DemoRepository.addNominee(name.trim(), relation.trim(), aadhaar)
+                    }
+                    onDismiss()
+                },
+                enabled = name.isNotBlank() && relation.isNotBlank() && aadhaar.length == 12
+            ) { Text(stringResource(R.string.nominees_add_save)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.dialog_cancel)) }

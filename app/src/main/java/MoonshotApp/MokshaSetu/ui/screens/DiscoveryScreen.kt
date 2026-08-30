@@ -65,7 +65,7 @@ fun DiscoveryScreen(onContinue: () -> Unit) {
 
     val discovered = DemoRepository.assets.toList()
     val total = discovered.sumOf { it.valueRupees }
-    val unassigned = discovered.count { it.nomineeId == null }
+    val unassigned = discovered.count { !it.isAssigned }
 
     Column(
         modifier = Modifier
@@ -172,11 +172,13 @@ private fun DiscoveredCard(asset: FinancialAsset) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
-    val nominee = DemoRepository.nomineeById(asset.nomineeId)
-    val footer = if (nominee == null) {
+    val splits = asset.splits.mapNotNull { split ->
+        DemoRepository.nomineeById(split.nomineeId)?.let { split to it }
+    }
+    val footer = if (splits.isEmpty()) {
         stringResource(R.string.asset_no_nominee)
     } else {
-        stringResource(R.string.asset_nominee_fmt, nominee.name, nominee.relation)
+        splits.joinToString(" · ") { "${it.second.name} · ${it.first.percent}%" }
     }
 
     AnimatedVisibility(
@@ -190,7 +192,7 @@ private fun DiscoveredCard(asset: FinancialAsset) {
             maskedId = asset.maskedId,
             amount = formatRupees(asset.valueRupees),
             footer = footer,
-            footerColor = if (nominee == null) RedAlert else Muted,
+            footerColor = if (splits.isEmpty()) RedAlert else Muted,
             chip = stringResource(R.string.discovery_via_fmt, asset.discoveredVia) to ChipKind.GREY
         )
     }

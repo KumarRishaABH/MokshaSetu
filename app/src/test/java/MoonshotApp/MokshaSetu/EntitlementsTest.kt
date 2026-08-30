@@ -16,9 +16,9 @@ class EntitlementsTest {
     fun returnsOnlyTheItemsBelongingToThatNominee() {
         val result = entitlementsFor(2, assets, identities, docs)
 
-        assertTrue(result.assets.all { it.nomineeId == 2 })
+        assertTrue(result.assets.all { it.splitFor(2) != null })
         assertTrue(result.digitalIdentities.all { it.nomineeId == 2 })
-        assertTrue(result.propertyDocs.all { it.nomineeId == 2 })
+        assertTrue(result.propertyDocs.all { doc -> doc.splits.any { it.nomineeId == 2 } })
     }
 
     @Test
@@ -27,7 +27,7 @@ class EntitlementsTest {
             .flatMap { entitlementsFor(it.id, assets, identities, docs).assets }
             .map { it.id }
             .toSet()
-        val unassignedIds = assets.filter { it.nomineeId == null }.map { it.id }
+        val unassignedIds = assets.filter { !it.isAssigned }.map { it.id }
 
         assertTrue(unassignedIds.isNotEmpty())
         assertTrue(unassignedIds.none { it in everyEntitledId })
@@ -37,11 +37,11 @@ class EntitlementsTest {
     fun totalUsesTheRegisteredSharePercentage() {
         val result = entitlementsFor(1, assets, identities, docs)
         val expected = assets
-            .filter { it.nomineeId == 1 }
-            .sumOf { it.valueRupees * it.sharePercent / 100 }
+            .filter { it.splitFor(1) != null }
+            .sumOf { it.shareRupeesFor(1) }
 
         assertEquals(expected, result.totalRupees)
-        assertTrue(result.totalRupees < assets.filter { it.nomineeId == 1 }.sumOf { it.valueRupees })
+        assertTrue(result.totalRupees < assets.filter { it.splitFor(1) != null }.sumOf { it.valueRupees })
     }
 
     @Test

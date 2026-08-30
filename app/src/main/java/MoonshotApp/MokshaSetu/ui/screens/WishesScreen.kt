@@ -39,6 +39,7 @@ import MoonshotApp.MokshaSetu.data.MetaKey
 import MoonshotApp.MokshaSetu.data.Wish
 import MoonshotApp.MokshaSetu.ui.BannerCard
 import MoonshotApp.MokshaSetu.ui.DashedActionCard
+import MoonshotApp.MokshaSetu.ui.EmptyStateCard
 import MoonshotApp.MokshaSetu.ui.VirasatTextField
 import MoonshotApp.MokshaSetu.ui.theme.GreyBg
 
@@ -52,6 +53,14 @@ fun WishesScreen() {
     ) {
         item { Spacer(Modifier.height(6.dp)) }
         item { BannerCard(GreyBg, stringResource(R.string.wishes_banner)) }
+        if (DemoRepository.wishes.isEmpty()) {
+            item {
+                EmptyStateCard(
+                    title = stringResource(R.string.wishes_empty_title),
+                    body = stringResource(R.string.wishes_empty_body)
+                )
+            }
+        }
         items(DemoRepository.wishes, key = { it.id }) { wish -> WishCard(wish) }
         item {
             DashedActionCard(
