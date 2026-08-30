@@ -6,7 +6,7 @@ data class Entitlements(
     val digitalIdentities: List<DigitalIdentity>,
     val propertyDocs: List<PropertyDoc>
 ) {
-    val totalRupees: Long get() = assets.sumOf { it.nomineeShareRupees }
+    val totalRupees: Long get() = assets.sumOf { it.shareRupeesFor(nomineeId) }
 
     val isEmpty: Boolean get() = assets.isEmpty() && digitalIdentities.isEmpty() && propertyDocs.isEmpty()
 }
@@ -18,7 +18,7 @@ fun entitlementsFor(
     propertyDocs: List<PropertyDoc>
 ): Entitlements = Entitlements(
     nomineeId = nomineeId,
-    assets = assets.filter { it.nomineeId == nomineeId },
+    assets = assets.filter { it.splitFor(nomineeId) != null },
     digitalIdentities = digitalIdentities.filter { it.nomineeId == nomineeId },
-    propertyDocs = propertyDocs.filter { it.nomineeId == nomineeId }
+    propertyDocs = propertyDocs.filter { doc -> doc.splits.any { it.nomineeId == nomineeId } }
 )

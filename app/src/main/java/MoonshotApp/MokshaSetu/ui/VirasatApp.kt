@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -85,7 +87,7 @@ fun VirasatApp() {
     }
 
     fun switchRole() {
-        DemoRepository.resetDemo()
+        DemoRepository.resetForRoleSwitch()
         backStack.clear()
         backStack.add(Dest.RoleChooser)
     }
@@ -181,9 +183,15 @@ fun VirasatApp() {
                 TabBar(current, ::selectTab)
             }
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0.dp, 0.dp, 0.dp, 0.dp)
     ) { innerPadding ->
-        Box(Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
+        Box(
+            Modifier
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
+                .then(if (current.isTabbed) Modifier else Modifier.navigationBarsPadding())
+        ) {
             when (val dest = current) {
                 Dest.RoleChooser -> RoleChooserScreen(onChoose = { role ->
                     DemoRepository.enterRole(role)
@@ -235,7 +243,7 @@ private val TAB_ITEMS = listOf(
 @Composable
 private fun TabBar(current: Dest, onSelect: (Dest) -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
-        Column {
+        Column(Modifier.navigationBarsPadding()) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,

@@ -8,6 +8,8 @@ Guidance for AI coding agents working in this repository.
 
 Everything is local and mocked. There is no backend, no network calls and no real India Stack integration — the four services in `data/services/` are deliberate simulations with coroutine delays so the demo feels live.
 
+> **Deviation (user-directed, Aug 2026):** Aadhaar OTP verification now checks a hosted registry — FastAPI on Vercel backed by MongoDB Atlas (code in `server/`), reached over HTTPS via OkHttp. Everything else stays local and mocked.
+
 ## MVP scope: two journeys behind a role chooser
 
 The app opens on a role chooser that forks into two self-contained journeys. Only build what is listed here.

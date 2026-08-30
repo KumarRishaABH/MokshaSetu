@@ -2,6 +2,8 @@ package MoonshotApp.MokshaSetu.data
 
 enum class UserRole { PLANNER, NOMINEE }
 
+enum class DataMode { SCRATCH, DEMO }
+
 enum class AssetKind { BANK, DEMAT, INSURANCE, PROPERTY }
 
 enum class DigitalAction { MEMORIALISE, DELETE, TRANSFER_ACCESS }
@@ -17,17 +19,24 @@ data class AadhaarProfile(
     val address: String
 )
 
+data class NomineeSplit(val nomineeId: Int, val percent: Int)
+
 data class FinancialAsset(
     val id: Int,
     val kind: AssetKind,
     val institution: String,
     val maskedId: String,
     val valueRupees: Long,
-    val nomineeId: Int?,
-    val sharePercent: Int = 100,
+    val splits: List<NomineeSplit> = emptyList(),
     val discoveredVia: String
 ) {
-    val nomineeShareRupees: Long get() = valueRupees * sharePercent / 100
+    val isAssigned: Boolean get() = splits.isNotEmpty()
+    val registeredPercent: Int get() = splits.sumOf { it.percent }
+    val unregisteredPercent: Int get() = (100 - registeredPercent).coerceAtLeast(0)
+
+    fun splitFor(nomineeId: Int): NomineeSplit? = splits.firstOrNull { it.nomineeId == nomineeId }
+
+    fun shareRupeesFor(nomineeId: Int): Long = valueRupees * (splitFor(nomineeId)?.percent ?: 0) / 100
 }
 
 data class DigitalIdentity(
@@ -45,7 +54,8 @@ data class Nominee(
     val name: String,
     val relation: String,
     val maskedAadhaar: String,
-    val verified: Boolean
+    val verified: Boolean,
+    val demoAadhaar: String? = null
 ) {
     val initial: String get() = name.trim().take(1).uppercase().ifBlank { "?" }
 }
@@ -54,7 +64,7 @@ data class PropertyDoc(
     val id: Int,
     val title: String,
     val fileName: String,
-    val nomineeId: Int?
+    val splits: List<NomineeSplit> = emptyList()
 )
 
 data class DeathCertificate(

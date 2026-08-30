@@ -39,6 +39,7 @@ import MoonshotApp.MokshaSetu.data.DigitalIdentity
 import MoonshotApp.MokshaSetu.ui.BannerCard
 import MoonshotApp.MokshaSetu.ui.ChipKind
 import MoonshotApp.MokshaSetu.ui.DashedActionCard
+import MoonshotApp.MokshaSetu.ui.EmptyStateCard
 import MoonshotApp.MokshaSetu.ui.SecretRow
 import MoonshotApp.MokshaSetu.ui.StatusChip
 import MoonshotApp.MokshaSetu.ui.VirasatTextField
@@ -64,6 +65,14 @@ fun DigitalVaultScreen() {
     ) {
         item { Spacer(Modifier.height(6.dp)) }
         item { BannerCard(GreyBg, stringResource(R.string.digital_banner)) }
+        if (DemoRepository.digitalIdentities.isEmpty()) {
+            item {
+                EmptyStateCard(
+                    title = stringResource(R.string.digital_empty_title),
+                    body = stringResource(R.string.digital_empty_body)
+                )
+            }
+        }
         items(DemoRepository.digitalIdentities, key = { it.id }) { identity ->
             IdentityCard(identity, onAssign = { picking = identity })
         }

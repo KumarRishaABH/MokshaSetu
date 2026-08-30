@@ -1,16 +1,25 @@
 <resources>
-    <string name="app_name">Virasat</string>
-    <string name="brand_title">Viराsat</string>
+    <string name="app_name">MokshaSetu</string>
+    <string name="brand_title">MokshaSetu</string>
 
     <!-- Role chooser -->
-    <string name="role_tagline">Plan your legacy while you can. Claim what is yours when you must.</string>
+    <string name="role_tagline">Plan while you can. Claim when you must.</string>
     <string name="role_planner_title">I am planning my legacy</string>
-    <string name="role_planner_body">Sign in with Aadhaar and we will find your bank, demat and insurance accounts for you. Add your property papers and digital accounts, then name one trusted person for each.</string>
+    <string name="role_planner_body">Sign in and we find your accounts — you name the nominees.</string>
     <string name="role_planner_footer">TAKES ABOUT TWO MINUTES</string>
     <string name="role_nominee_title">I am a nominee · I have lost someone</string>
-    <string name="role_nominee_body">Verify who you are, upload the death certificate once, and see exactly what was left in your name — then claim it in a single tap.</string>
+    <string name="role_nominee_body">Verify yourself once, then claim what was left for you.</string>
     <string name="role_nominee_footer">NO BRANCH VISIT · NO PAPERWORK</string>
-    <string name="role_trust_note">Built on Aadhaar · DigiLocker · Account Aggregator · UDGAM\nDPDP Act 2023 §14 · A nominee is a trustee, not an owner</string>
+    <string name="role_stack_aadhaar">🆔 Aadhaar</string>
+    <string name="role_stack_digilocker">📁 DigiLocker</string>
+    <string name="role_stack_aa">🔁 Account Aggregator</string>
+    <string name="role_stack_udgam">🏦 UDGAM</string>
+    <string name="role_trust_chip">🛡️ DPDP §14 · Trustee, not owner</string>
+    <string name="role_mode_label">SESSION DATA</string>
+    <string name="role_mode_scratch">🧹 From scratch</string>
+    <string name="role_mode_demo">🪔 Demo vault</string>
+    <string name="role_mode_hint_scratch">Nothing is pre-filled. Discover your accounts, name your nominees, fill your vault — then walk the nominee journey on your own data.</string>
+    <string name="role_mode_hint_demo">A fully prepared vault — accounts, nominees, credentials and wishes — ready to present.</string>
     <string name="action_switch_role">Switch role ⇄</string>
 
     <!-- Aadhaar login -->
@@ -29,9 +38,15 @@
     <string name="aadhaar_verifying">Verifying…</string>
     <string name="aadhaar_demo_label">DEMO CREDENTIALS · TAP TO FILL</string>
     <string name="aadhaar_demo_value_fmt">%1$s  ·  OTP %2$s</string>
-    <string name="aadhaar_demo_hint">This is a mock UIDAI flow. Any 12 digits are accepted; the OTP is fixed.</string>
+    <string name="aadhaar_demo_hint">This is a simulated UIDAI registry. Only the demo numbers below are seeded; any other Aadhaar is rejected. The OTP is fixed.</string>
+    <string name="aadhaar_demo_nominee_empty">No nominees are registered in this vault yet. Walk the planner journey first, name someone, then sign in as them.</string>
     <string name="aadhaar_error_otp_send">Enter all 12 digits of the Aadhaar number.</string>
     <string name="aadhaar_error_otp_wrong">That OTP did not match. Try again.</string>
+    <string name="aadhaar_error_not_registered">Not in the registry. Tap a demo number below to use a seeded identity.</string>
+    <string name="aadhaar_error_server_unreachable">Registry server unreachable — check your internet or the deployment.</string>
+    <string name="aadhaar_status_checking">🟡 Checking registry…</string>
+    <string name="aadhaar_status_connected">🟢 Registry connected</string>
+    <string name="aadhaar_status_offline">🔴 Registry offline</string>
     <string name="aadhaar_footer">🔒 Simulated for the demo. No real Aadhaar data is sent, stored or shown anywhere in this app.</string>
 
     <!-- Discovery -->
@@ -99,7 +114,7 @@
     <!-- Assets -->
     <string name="assets_title">Your assets</string>
     <string name="assets_subtitle">DISCOVERED · MAPPED · NOMINATED</string>
-    <string name="assets_banner">🏦 One nominee per asset. Tap any card to change who is responsible for it. Virasat records the nomination — the institution keeps final succession control.</string>
+    <string name="assets_banner">🏦 One nominee per asset. Tap any card to change who is responsible for it. MokshaSetu records the nomination — the institution keeps final succession control.</string>
     <string name="assets_section_fmt">%1$s · %2$s</string>
     <string name="assets_empty_title">Nothing here yet</string>
     <string name="assets_empty_body_fmt">No %1$s were found in your name.</string>
@@ -113,6 +128,16 @@
     <string name="picker_nominee_sub_fmt">%1$s · %2$s</string>
     <string name="picker_none_title">No nominee</string>
     <string name="picker_none_sub">Routes to succession law instead</string>
+    <string name="picker_empty_hint">No trusted people yet — add them in the Nominees tab first.</string>
+    <string name="asset_split_line_fmt">%1$s · %2$d%%</string>
+    <string name="asset_unregistered_fmt">⚠ %1$d%% unregistered — succession law covers it</string>
+    <string name="split_body">Type the registered share for each nominee. Anything left unregistered follows succession law.</string>
+    <string name="split_total_fmt">Total registered: %1$d%%</string>
+    <string name="split_succession_note_fmt">The remaining %1$d%% is unregistered — succession law decides it.</string>
+    <string name="split_over_limit">Shares cannot add up to more than 100 percent.</string>
+    <string name="split_clear_all">Clear all nominations</string>
+    <string name="split_percent_label">%</string>
+    <string name="split_save">Save shares</string>
     <string name="picker_title_asset_fmt">Nominee for %1$s</string>
     <string name="picker_title_digital_fmt">Nominee for %1$s</string>
     <string name="picker_title_property">Nominee for this property</string>
@@ -135,6 +160,8 @@
     <string name="digital_action_label">AFTER MY DEATH</string>
     <string name="digital_nominee_label">RELEASE TO</string>
     <string name="digital_add_save">Save to vault</string>
+    <string name="digital_empty_title">Your vault is empty</string>
+    <string name="digital_empty_body">Add the first account below and decide what should happen to it after you — memorialise, delete or hand access over.</string>
 
     <!-- Property upload -->
     <string name="property_title">Property papers</string>
@@ -187,10 +214,13 @@
     <string name="nominees_unassigned_note">Without a nominee these go to succession law: months of paperwork for your family, and often nothing at all if they never learn the account existed.</string>
     <string name="nominees_dpdp_banner">🛡️ A nominee is a trustee, not an owner. They can only act once the state\'s death record is verified, and the money is always distributed per succession law.</string>
 
+    <string name="nominees_empty_title">No trusted people yet</string>
+    <string name="nominees_empty_body">Add the person who will claim for you — the nominee journey signs in as them.</string>
+
     <!-- Wishes -->
     <string name="wishes_title">Last wishes &amp; messages</string>
     <string name="wishes_subtitle">RELEASED ON VERIFIED DEATH</string>
-    <string name="wishes_banner">💌 The free, emotional half of Virasat. Messages and unfulfilled wishes stay sealed until the death certificate is verified — then they reach the person you named.</string>
+    <string name="wishes_banner">💌 The free, emotional half of MokshaSetu. Messages and unfulfilled wishes stay sealed until the death certificate is verified — then they reach the person you named.</string>
     <string name="wish_fd_text">\"Rohan — the FD for Aarav\'s college is in SBI, not our joint account. Promise me he finishes engineering.\"</string>
     <string name="wish_fd_meta">📩 To: %1$s · Unlocks on verification</string>
     <string name="wish_temple_text">\"I always wanted to take Ma to see the Golden Temple. Use my LIC maturity — take her for me.\"</string>
@@ -207,12 +237,14 @@
     <string name="wishes_recipient_label">For whom</string>
     <string name="wishes_add_save">Seal this wish</string>
     <string name="wishes_default_recipient">family</string>
+    <string name="wishes_empty_title">No wishes recorded</string>
+    <string name="wishes_empty_body">Leave a message, an instruction or an unfinished wish — it stays sealed until the death record is verified.</string>
 
     <!-- Death certificate -->
     <string name="cert_title">Death certificate</string>
     <string name="cert_subtitle">STEP 1 OF 3 · THE STATE\'S OWN RECORD</string>
     <string name="cert_condolence_fmt">%1$s, we are very sorry for your loss. 🙏 There is only one form, and we will do the rest.</string>
-    <string name="cert_intro">📄 The certificate is issued by the municipal registrar and recorded in the state Civil Registration System. Virasat only reads it — we never issue, alter or forge it.</string>
+    <string name="cert_intro">📄 The certificate is issued by the municipal registrar and recorded in the state Civil Registration System. MokshaSetu only reads it — we never issue, alter or forge it.</string>
     <string name="cert_section_record">THE REGISTERED RECORD</string>
     <string name="cert_reg_no_label">Registration number</string>
     <string name="cert_state_label">STATE OF REGISTRATION</string>
@@ -224,6 +256,7 @@
     <string name="cert_demo_label">DEMO RECORD · TAP TO FILL</string>
     <string name="cert_demo_value_fmt">%1$s  ·  %2$s</string>
     <string name="cert_demo_hint">Any other registration number will be rejected by the mock registry, so you can see the failure path too.</string>
+    <string name="cert_demo_name_fmt">Deceased on record: %1$s</string>
     <string name="cert_submit">Verify against the state registry</string>
     <string name="cert_footer">Nothing is released to you until this record matches. That single requirement is what makes the whole flow fraud-resistant.</string>
 
@@ -269,7 +302,7 @@
     <!-- Claim -->
     <string name="claim_title">One-tap claim</string>
     <string name="claim_subtitle">WE VERIFY · WE NEVER MOVE MONEY</string>
-    <string name="claim_guardrail_banner">🕊️ Virasat sends each institution a verified claim packet — your identity, the state\'s death record, and the nomination on file. The institution credits you directly. Money never passes through us.</string>
+    <string name="claim_guardrail_banner">🕊️ MokshaSetu sends each institution a verified claim packet — your identity, the state\'s death record, and the nomination on file. The institution credits you directly. Money never passes through us.</string>
     <string name="claim_all_cta_fmt">Claim all %1$d in one tap</string>
     <string name="claim_section_assets">YOUR CLAIMS</string>
     <string name="claim_asset_cta_fmt">Send claim packet to %1$s</string>
@@ -277,9 +310,9 @@
     <string name="claim_state_processing_fmt">%1$s is processing the claim…</string>
     <string name="claim_state_credited_fmt">✓ %1$s credited %2$s to your account</string>
     <string name="claim_reference_fmt">Reference %1$s</string>
-    <string name="claim_credited_note">Credited by the institution, not by Virasat. Keep the reference number for your records.</string>
+    <string name="claim_credited_note">Credited by the institution, not by MokshaSetu. Keep the reference number for your records.</string>
     <string name="claim_sheet_title">Before we send this</string>
-    <string name="claim_sheet_body_fmt">Virasat will send a verified claim packet to %1$s. %2$s will credit the amount to your account. Virasat never holds or moves your money.</string>
+    <string name="claim_sheet_body_fmt">MokshaSetu will send a verified claim packet to %1$s. %2$s will credit the amount to your account. MokshaSetu never holds or moves your money.</string>
     <string name="claim_sheet_total">Total</string>
     <string name="claim_sheet_note">The institution keeps final succession control and may ask you for more. We only make sure they receive a complete, verified claim on the first attempt.</string>
     <string name="claim_sheet_confirm">Send the claim packet</string>

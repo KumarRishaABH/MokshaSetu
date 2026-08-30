@@ -52,6 +52,7 @@ import MoonshotApp.MokshaSetu.ui.theme.Navy
 fun DeathCertificateScreen(onSubmit: () -> Unit) {
     val context = LocalContext.current
     val nomineeName = DemoRepository.nomineeProfile?.name.orEmpty()
+    val registeredName = DemoRepository.vaultOwnerName ?: Fixtures.deathCertificate.deceasedName
 
     var registrationNo by remember { mutableStateOf("") }
     var state by remember { mutableStateOf(Fixtures.states.first()) }
@@ -154,7 +155,7 @@ fun DeathCertificateScreen(onSubmit: () -> Unit) {
             modifier = Modifier.fillMaxWidth().noRippleClickable {
                 registrationNo = Fixtures.deathCertificate.registrationNo
                 state = Fixtures.deathCertificate.state
-                deceasedName = Fixtures.deathCertificate.deceasedName
+                deceasedName = registeredName
             }
         ) {
             Column(Modifier.padding(11.dp)) {
@@ -174,6 +175,12 @@ fun DeathCertificateScreen(onSubmit: () -> Unit) {
                     ),
                     fontSize = 11.5.sp,
                     fontWeight = FontWeight.Bold,
+                    color = Navy
+                )
+                Text(
+                    stringResource(R.string.cert_demo_name_fmt, registeredName),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold,
                     color = Navy
                 )
                 Text(stringResource(R.string.cert_demo_hint), fontSize = 9.5.sp, color = Muted)

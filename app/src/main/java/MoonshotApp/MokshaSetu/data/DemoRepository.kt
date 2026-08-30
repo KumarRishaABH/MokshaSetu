@@ -8,17 +8,28 @@ import MoonshotApp.MokshaSetu.data.services.MockAccountDiscoveryService
 import MoonshotApp.MokshaSetu.data.services.MockDeathRegistryService
 import MoonshotApp.MokshaSetu.data.services.MockSettlementService
 import MoonshotApp.MokshaSetu.data.services.SettlementService
+import MoonshotApp.MokshaSetu.data.remote.AadhaarRecord
+import MoonshotApp.MokshaSetu.data.remote.AadhaarRegistry
+import MoonshotApp.MokshaSetu.data.remote.RemoteAadhaarRegistry
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object DemoRepository {
 
-    val aadhaarAuth: AadhaarAuthService = MockAadhaarAuthService()
+    val aadhaarRegistry: AadhaarRegistry = RemoteAadhaarRegistry()
+    val aadhaarAuth: AadhaarAuthService = MockAadhaarAuthService(aadhaarRegistry)
     val accountDiscovery: AccountDiscoveryService = MockAccountDiscoveryService()
     val deathRegistry: DeathRegistryService = MockDeathRegistryService()
     val settlement: SettlementService = MockSettlementService()
+
+    var dataMode by mutableStateOf(DataMode.SCRATCH)
+        private set
 
     var role by mutableStateOf(UserRole.PLANNER)
         private set
@@ -27,6 +38,9 @@ object DemoRepository {
         private set
 
     var nomineeProfile by mutableStateOf<AadhaarProfile?>(null)
+        private set
+
+    var vaultOwnerName by mutableStateOf<String?>(null)
         private set
 
     val assets = mutableStateListOf<FinancialAsset>()
@@ -46,47 +60,76 @@ object DemoRepository {
         resetDemo()
     }
 
-    fun resetDemo() {
+    fun chooseDataMode(mode: DataMode) {
+        if (mode != dataMode) resetDemo(mode)
+    }
+
+    fun resetDemo(mode: DataMode = dataMode) {
+        dataMode = mode
+        resetIdentity()
+        vaultOwnerName = if (mode == DataMode.DEMO) Fixtures.plannerProfile.name else null
+        if (mode == DataMode.DEMO) {
+            assets.replaceWith(Fixtures.assets())
+            digitalIdentities.replaceWith(Fixtures.digitalIdentities())
+            nominees.replaceWith(Fixtures.nominees())
+            propertyDocs.replaceWith(Fixtures.propertyDocs())
+            wishes.replaceWith(Fixtures.wishes())
+        } else {
+            assets.clear()
+            digitalIdentities.clear()
+            nominees.clear()
+            propertyDocs.clear()
+            wishes.clear()
+        }
+    }
+
+    fun resetIdentity() {
         role = UserRole.PLANNER
         plannerProfile = null
         nomineeProfile = null
         deathCert = null
         registryState = RegistryState.IDLE
         claims.clear()
-        assets.replaceWith(Fixtures.assets())
-        digitalIdentities.replaceWith(Fixtures.digitalIdentities())
-        nominees.replaceWith(Fixtures.nominees())
-        propertyDocs.replaceWith(Fixtures.propertyDocs())
-        wishes.replaceWith(Fixtures.wishes())
+    }
+
+    fun resetForRoleSwitch() {
+        if (dataMode == DataMode.SCRATCH) resetIdentity() else resetDemo(DataMode.DEMO)
     }
 
     fun enterRole(newRole: UserRole) {
-        resetDemo()
+        if (dataMode == DataMode.DEMO) resetDemo(DataMode.DEMO) else resetIdentity()
         role = newRole
-        if (newRole == UserRole.PLANNER) {
+        if (newRole == UserRole.PLANNER && dataMode == DataMode.DEMO) {
             assets.clear()
             propertyDocs.clear()
         }
     }
 
     fun signIn(forRole: UserRole, profile: AadhaarProfile) {
-        if (forRole == UserRole.PLANNER) plannerProfile = profile else nomineeProfile = profile
+        if (forRole == UserRole.PLANNER) {
+            plannerProfile = profile
+            vaultOwnerName = profile.name
+        } else {
+            nomineeProfile = profile
+        }
     }
 
     fun onAssetDiscovered(asset: FinancialAsset) {
-        if (assets.none { it.id == asset.id }) assets.add(asset)
+        if (assets.any { it.id == asset.id }) return
+        val incoming = if (dataMode == DataMode.SCRATCH) asset.copy(splits = emptyList()) else asset
+        assets.add(incoming)
     }
 
     fun nomineeById(id: Int?): Nominee? = if (id == null) null else nominees.firstOrNull { it.id == id }
 
     fun activeNominee(): Nominee? {
-        val masked = nomineeProfile?.maskedAadhaar
-        return nominees.firstOrNull { it.maskedAadhaar == masked } ?: nominees.firstOrNull()
+        val masked = nomineeProfile?.maskedAadhaar ?: return null
+        return nominees.firstOrNull { it.maskedAadhaar == masked }
     }
 
-    fun unassignedAssets(): List<FinancialAsset> = assets.filter { it.nomineeId == null }
+    fun unassignedAssets(): List<FinancialAsset> = assets.filter { !it.isAssigned }
 
-    fun assetsOf(nomineeId: Int): List<FinancialAsset> = assets.filter { it.nomineeId == nomineeId }
+    fun assetsOf(nomineeId: Int): List<FinancialAsset> = assets.filter { it.splitFor(nomineeId) != null }
 
     fun digitalIdentitiesOf(nomineeId: Int): List<DigitalIdentity> =
         digitalIdentities.filter { it.nomineeId == nomineeId }
@@ -98,7 +141,7 @@ object DemoRepository {
 
     fun readinessScore(): Int {
         if (assets.isEmpty() && digitalIdentities.isEmpty()) return 0
-        val assetPart = if (assets.isEmpty()) 0 else assets.count { it.nomineeId != null } * 50 / assets.size
+        val assetPart = if (assets.isEmpty()) 0 else assets.count { it.isAssigned } * 50 / assets.size
         val digitalPart = if (digitalIdentities.isEmpty()) {
             0
         } else {
@@ -109,11 +152,11 @@ object DemoRepository {
         return (assetPart + digitalPart + wishPart + paperPart).coerceIn(0, 100)
     }
 
-    fun assignAssetNominee(assetId: Int, nomineeId: Int?) {
+    fun assignAssetSplits(assetId: Int, splits: List<NomineeSplit>) {
         val index = assets.indexOfFirst { it.id == assetId }
-        if (index >= 0) assets[index] = assets[index].copy(nomineeId = nomineeId)
+        if (index >= 0) assets[index] = assets[index].copy(splits = splits)
         val docIndex = propertyDocs.indexOfFirst { it.id == assetId }
-        if (docIndex >= 0) propertyDocs[docIndex] = propertyDocs[docIndex].copy(nomineeId = nomineeId)
+        if (docIndex >= 0) propertyDocs[docIndex] = propertyDocs[docIndex].copy(splits = splits)
     }
 
     fun assignDigitalNominee(identityId: Int, nomineeId: Int?) {
@@ -144,6 +187,7 @@ object DemoRepository {
 
     fun addProperty(title: String, fileName: String, valueRupees: Long, nomineeId: Int?) {
         val id = (assets.maxOfOrNull { it.id } ?: 0) + 1
+        val splits = listOfNotNull(nomineeId?.let { NomineeSplit(it, 100) })
         assets.add(
             FinancialAsset(
                 id = id,
@@ -151,18 +195,52 @@ object DemoRepository {
                 institution = title,
                 maskedId = fileName,
                 valueRupees = valueRupees,
-                nomineeId = nomineeId,
+                splits = splits,
                 discoveredVia = Fixtures.VIA_SELF
             )
         )
-        propertyDocs.add(PropertyDoc(id, title, fileName, nomineeId))
+        propertyDocs.add(PropertyDoc(id, title, fileName, splits))
     }
 
     fun propertyDocFor(assetId: Int): PropertyDoc? = propertyDocs.firstOrNull { it.id == assetId }
 
     fun addNominee(name: String, relation: String, aadhaarDigits: String) {
         val id = (nominees.maxOfOrNull { it.id } ?: 0) + 1
-        nominees.add(Nominee(id, name, relation, maskAadhaar(aadhaarDigits), verified = false))
+        val digits = aadhaarDigits.filter { it.isDigit() }
+        nominees.add(
+            Nominee(
+                id = id,
+                name = name,
+                relation = relation,
+                maskedAadhaar = maskAadhaar(digits),
+                verified = false,
+                demoAadhaar = digits.takeIf { it.length == 12 }
+            )
+        )
+        if (digits.length == 12) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    aadhaarRegistry.upsert(
+                        AadhaarRecord(
+                            aadhaarNumber = digits,
+                            holderName = name,
+                            dob = "",
+                            address = "",
+                            mobileLast4 = "0000",
+                            active = true
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.w("DemoRepository", "Nominee registry upsert failed", e)
+                }
+            }
+        }
+    }
+
+    fun suggestNomineeAadhaar(): String {
+        var candidate = 450_000_000_000L + nominees.size
+        while (nominees.any { it.demoAadhaar == candidate.toString() }) candidate++
+        return candidate.toString()
     }
 
     fun addWish(text: String, recipient: String) {
